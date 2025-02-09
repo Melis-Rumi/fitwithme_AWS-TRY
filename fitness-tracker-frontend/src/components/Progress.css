@@ -1,0 +1,26 @@
+.progress-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  text-align: center;
+}
+
+.time-range-selector {
+  margin-bottom: 20px;
+}
+
+.chart-section {
+  margin-top: 10px;
+  text-align: left;
+}
+
+button {
+  margin: 10px;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+canvas {
+  max-width: 100%;
+  height: auto;
+}

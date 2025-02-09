@@ -1,0 +1,117 @@
+/* Home Container */
+.home-container {
+  max-width: 1000px; /* Increased width to accommodate the larger calendar */
+  margin: 0 auto;
+  padding: 30px; /* Increased padding */
+  text-align: center;
+}
+
+.calendar-container {
+  margin-top: 30px; /* Increased margin */
+}
+
+/* Custom styles for react-calendar */
+.react-calendar {
+  width: 100%;
+  max-width: 600px; /* Increased max-width */
+  margin: 0 auto;
+  border: 2px solid #ccc; /* Slightly thicker border */
+  border-radius: 12px; /* Slightly larger border radius */
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.1); /* Slightly larger shadow */
+  background-color: #fff;
+  font-family: Arial, sans-serif;
+  font-size: 18px; /* Base font size increased */
+}
+
+/* Navigation bar (month/year) */
+.react-calendar__navigation {
+  background-color: #007bff;
+  color: white;
+  padding: 15px; /* Increased padding */
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  padding-bottom: 80px;
+}
+
+.react-calendar__navigation button {
+  color: white;
+  background: none;
+  padding: 15px; /* Increased padding */
+  border: none;
+  font-size: 20px; /* Increased font size */
+  cursor: pointer;
+  padding-bottom: 50px;
+}
+
+.react-calendar__navigation button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Month view */
+.react-calendar__month-view {
+  padding: 10px; /* Increased padding */
+}
+
+/* Weekday Names */
+.react-calendar__month-view__weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr); /* 7 columns for 7 days */
+  text-align: center; /* Center-align weekday names */
+}
+
+.react-calendar__month-view__weekdays abbr {
+  padding: 15px; /* Increased padding */
+  font-size: 18px; /* Increased font size */
+  font-weight: bold; /* Make weekday names bold */
+  color: #333; /* Dark gray color for better visibility */
+  text-decoration: none; /* Remove underline from abbreviations */
+}
+
+/* Calendar Days */
+.react-calendar__month-view__days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr); /* 7 columns for 7 days */
+  gap: 0px; /* Slightly increased spacing between tiles */
+}
+
+.react-calendar__tile {
+  padding: 20px; /* Increased padding */
+  text-align: center; /* Center-align day numbers */
+  border-radius: 8px; /* Slightly larger border radius */
+  background-color: #f9f9f9;
+  border: 1px solid #eee;
+  cursor: pointer;
+  font-size: 18px; /* Increased font size */
+  color: black !important; /* Ensure all text is black */
+}
+
+/* Today's Date */
+.react-calendar__tile--now {
+  background-color: #e6f7ff; /* Light blue background for today */
+  color: black !important; /* Black font color for today */
+}
+
+/* Selected Date */
+.react-calendar__tile--active {
+  background-color: #007bff; /* Blue background for selected date */
+  color: white !important; /* White font color for selected date */
+}
+
+/* Custom tile content for training programs */
+.training-program {
+  font-size: 16px; /* Increased font size */
+  color: #007bff;
+  margin-top: 8px; /* Increased margin */
+}
+
+/* Highlight recorded days */
+.recorded-day {
+  background-color: #e6ffe6 !important; /* Light green background */
+}
+
+/* Record indicator (checkmark) */
+.record-indicator {
+  color: green;
+  font-size: 18px; /* Increased font size */
+}
