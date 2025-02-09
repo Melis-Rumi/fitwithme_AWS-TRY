@@ -62,25 +62,25 @@ const Progress = () => {
         };
 
         const dietResponse = await axios.get(
-          `http://127.0.0.1:8000/api/progress/diet/?range=${timeRange}`,
+          `https://fitwithme.onrender.com/api/progress/diet/?range=${timeRange}`,
           { headers }
         );
         setDietData(dietResponse.data || []);
 
         const cardioResponse = await axios.get(
-          `http://127.0.0.1:8000/api/progress/cardio/?range=${timeRange}`,
+          `https://fitwithme.onrender.com/api/progress/cardio/?range=${timeRange}`,
           { headers }
         );
         setCardioData(cardioResponse.data || []);
 
         const trainingResponse = await axios.get(
-          `http://127.0.0.1:8000/api/progress/training/?range=${timeRange}`,
+          `https://fitwithme.onrender.com/api/progress/training/?range=${timeRange}`,
           { headers }
         );
         setTrainingData(trainingResponse.data || []);
 
         const metricsResponse = await axios.get(
-          `http://127.0.0.1:8000/api/progress/metrics/?range=${timeRange}`,
+          `https://fitwithme.onrender.com/api/progress/metrics/?range=${timeRange}`,
           { headers }
         );
         setMetricsData(metricsResponse.data || []);

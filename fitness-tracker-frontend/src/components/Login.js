@@ -21,7 +21,7 @@ const Login = () => {
     e.preventDefault();
     setError('');
     try {
-      const response = await axios.post('http://127.0.0.1:8000/login/', formData, {
+      const response = await axios.post('https://fitwithme.onrender.com/login/', formData, {
         headers: {
           'Content-Type': 'application/json',
         },

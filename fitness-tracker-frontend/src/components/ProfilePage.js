@@ -25,7 +25,7 @@ const ProfilePage = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/api/client-profile/', {
+        const response = await axios.get('https://fitwithme.onrender.com/api/client-profile/', {
           headers: { Authorization: `Bearer ${token}` },
         });
         setProfile(response.data);
@@ -46,7 +46,7 @@ const ProfilePage = () => {
   // Save updated profile
   const handleSave = async () => {
     try {
-      await axios.put('http://127.0.0.1:8000/api/client-profile/', formData, {
+      await axios.put('https://fitwithme.onrender.com/api/client-profile/', formData, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setProfile(formData); // Update local state with new data

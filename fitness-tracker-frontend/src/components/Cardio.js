@@ -21,7 +21,7 @@ const Cardio = () => {
       return;
     }
     axios
-      .get(`http://127.0.0.1:8000/api/cardio/${date}/`, {
+      .get(`https://fitwithme.onrender.com/api/cardio/${date}/`, {
         headers: { Authorization: `Bearer ${token}` }, // Include the token in the headers
       })
       .then((response) => {
@@ -50,12 +50,12 @@ const Cardio = () => {
       }
       // Save the current cardio record to the backend
       await axios.post(
-        'http://127.0.0.1:8000/api/cardio/',
+        'https://fitwithme.onrender.com/api/cardio/',
         { ...formData, date },
         { headers: { Authorization: `Bearer ${token}` } } // Include the token in the headers
       );
       // Fetch updated cardio records from the backend
-      const response = await axios.get(`http://127.0.0.1:8000/api/cardio/${date}/`, {
+      const response = await axios.get(`https://fitwithme.onrender.com/api/cardio/${date}/`, {
         headers: { Authorization: `Bearer ${token}` }, // Include the token in the headers
       });
       setCardioRecords(response.data);
@@ -75,7 +75,7 @@ const Cardio = () => {
         return;
       }
       const recordToDelete = cardioRecords[index];
-      await axios.delete(`http://127.0.0.1:8000/api/cardio/${recordToDelete.id}/`, {
+      await axios.delete(`https://fitwithme.onrender.com/api/cardio/${recordToDelete.id}/`, {
         headers: { Authorization: `Bearer ${token}` }, // Include the token in the headers
       });
       // Remove the deleted record from the state

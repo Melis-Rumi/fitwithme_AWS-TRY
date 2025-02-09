@@ -6,7 +6,7 @@ const ClientList = () => {
   const [clients, setClients] = useState([]);
 
   useEffect(() => {
-    axios.get('http://127.0.0.1:8000/clients/?format=json')
+    axios.get('https://fitwithme.onrender.com/clients/?format=json')
       .then(response => {
         console.log('Fetched clients:', response.data); // Debugging line
         setClients(response.data);

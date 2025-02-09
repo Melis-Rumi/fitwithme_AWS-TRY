@@ -23,7 +23,7 @@ const Diet = () => {
     }
 
     axios
-      .get(`http://127.0.0.1:8000/api/diet/${date}/`, {
+      .get(`https://fitwithme.onrender.com/api/diet/${date}/`, {
         headers: { Authorization: `Bearer ${token}` }, // Include the token in the headers
       })
       .then((response) => {
@@ -54,13 +54,13 @@ const Diet = () => {
 
       // Save the current diet record to the backend
       await axios.post(
-        'http://127.0.0.1:8000/api/diet/',
+        'https://fitwithme.onrender.com/api/diet/',
         { ...formData, date },
         { headers: { Authorization: `Bearer ${token}` } } // Include the token in the headers
       );
 
       // Fetch updated diet records from the backend
-      const response = await axios.get(`http://127.0.0.1:8000/api/diet/${date}/`, {
+      const response = await axios.get(`https://fitwithme.onrender.com/api/diet/${date}/`, {
         headers: { Authorization: `Bearer ${token}` }, // Include the token in the headers
       });
       setDietRecords(response.data);
@@ -88,7 +88,7 @@ const Diet = () => {
       }
 
       const recordToDelete = dietRecords[index];
-      await axios.delete(`http://127.0.0.1:8000/api/diet/${recordToDelete.id}/`, {
+      await axios.delete(`https://fitwithme.onrender.com/api/diet/${recordToDelete.id}/`, {
         headers: { Authorization: `Bearer ${token}` }, // Include the token in the headers
       });
 

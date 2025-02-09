@@ -21,13 +21,13 @@ const Home = () => {
           return;
         }
         // Fetch cardio records
-        const cardioResponse = await axios.get('http://127.0.0.1:8000/api/cardio_all/', {
+        const cardioResponse = await axios.get('https://fitwithme.onrender.com/api/cardio_all/', {
           headers: { Authorization: `Bearer ${token}` }, // Include the token in the headers
         });
         const cardioData = cardioResponse.data;
 
         // Fetch training records
-        const trainingResponse = await axios.get('http://127.0.0.1:8000/api/training_all/', {
+        const trainingResponse = await axios.get('https://fitwithme.onrender.com/api/training_all/', {
           headers: { Authorization: `Bearer ${token}` }, // Include the token in the headers
         });
         const trainingData = trainingResponse.data;

@@ -19,7 +19,7 @@ const Training = () => {
       return;
     }
     axios
-      .get('http://127.0.0.1:8000/api/muscle-groups/', {
+      .get('https://fitwithme.onrender.com/api/muscle-groups/', {
         headers: { Authorization: `Bearer ${token}` }, // Include the token in the headers
       })
       .then((response) => {
@@ -37,7 +37,7 @@ const Training = () => {
       return;
     }
     axios
-      .get(`http://127.0.0.1:8000/api/training/${date}/`, {
+      .get(`https://fitwithme.onrender.com/api/training/${date}/`, {
         headers: { Authorization: `Bearer ${token}` }, // Include the token in the headers
       })
       .then((response) => {
@@ -74,12 +74,12 @@ const Training = () => {
       }
       // Save the current exercise to the backend
       await axios.post(
-        'http://127.0.0.1:8000/api/training/',
+        'https://fitwithme.onrender.com/api/training/',
         { ...newExercise, date }, // Include the muscle field in the payload
         { headers: { Authorization: `Bearer ${token}` } } // Include the token in the headers
       );
       // Fetch updated exercises from the backend
-      const response = await axios.get(`http://127.0.0.1:8000/api/training/${date}/`, {
+      const response = await axios.get(`https://fitwithme.onrender.com/api/training/${date}/`, {
         headers: { Authorization: `Bearer ${token}` }, // Include the token in the headers
       });
       setExercises(response.data);
@@ -99,7 +99,7 @@ const Training = () => {
         return;
       }
       const recordToDelete = exercises[index];
-      await axios.delete(`http://127.0.0.1:8000/api/training/${recordToDelete.id}/`, {
+      await axios.delete(`https://fitwithme.onrender.com/api/training/${recordToDelete.id}/`, {
         headers: { Authorization: `Bearer ${token}` }, // Include the token in the headers
       });
       // Remove the deleted record from the state

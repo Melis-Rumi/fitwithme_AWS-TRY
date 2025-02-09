@@ -18,7 +18,7 @@ const TrainingDay = () => {
   // Fetch exercises and description
   const fetchExercises = useCallback(async () => {
     try {
-      const response = await axios.get(`http://127.0.0.1:8000/api/training-day/${dayId}/`, {
+      const response = await axios.get(`https://fitwithme.onrender.com/api/training-day/${dayId}/`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setDescription(response.data.description || ''); // Set the description
@@ -36,7 +36,7 @@ const TrainingDay = () => {
   const handleAddExercise = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(`http://127.0.0.1:8000/api/training-day/${dayId}/`, newExercise, {
+      await axios.post(`https://fitwithme.onrender.com/api/training-day/${dayId}/`, newExercise, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setNewExercise({
@@ -53,7 +53,7 @@ const TrainingDay = () => {
   // Handle deleting an exercise
   const handleDeleteExercise = async (exerciseId) => {
     try {
-      await axios.delete(`http://127.0.0.1:8000/api/exercise/${exerciseId}/`, {
+      await axios.delete(`https://fitwithme.onrender.com/api/exercise/${exerciseId}/`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       fetchExercises();
@@ -65,7 +65,7 @@ const TrainingDay = () => {
   // Handle saving the description
   const handleSaveDescription = async () => {
     try {
-      await axios.put(`http://127.0.0.1:8000/api/training-day/${dayId}/`, 
+      await axios.put(`https://fitwithme.onrender.com/api/training-day/${dayId}/`, 
         { description }, 
         { headers: { Authorization: `Bearer ${token}` } }
       );

@@ -25,7 +25,7 @@ const Metrics = () => {
       return;
     }
     axios
-      .get(`http://127.0.0.1:8000/api/metrics/${date}/`, {
+      .get(`https://fitwithme.onrender.com/api/metrics/${date}/`, {
         headers: { Authorization: `Bearer ${token}` }, // Include the token in the headers
       })
       .then((response) => {
@@ -62,12 +62,12 @@ const Metrics = () => {
       }
       // Save the current metrics record to the backend
       await axios.post(
-        'http://127.0.0.1:8000/api/metrics/',
+        'https://fitwithme.onrender.com/api/metrics/',
         { ...formData, date },
         { headers: { Authorization: `Bearer ${token}` } } // Include the token in the headers
       );
       // Fetch updated metrics records from the backend
-      const response = await axios.get(`http://127.0.0.1:8000/api/metrics/${date}/`, {
+      const response = await axios.get(`https://fitwithme.onrender.com/api/metrics/${date}/`, {
         headers: { Authorization: `Bearer ${token}` }, // Include the token in the headers
       });
       setMetricsRecords(response.data);
@@ -95,7 +95,7 @@ const Metrics = () => {
         return;
       }
       const recordToDelete = metricsRecords[index];
-      await axios.delete(`http://127.0.0.1:8000/api/metrics/${recordToDelete.id}/`, {
+      await axios.delete(`https://fitwithme.onrender.com/api/metrics/${recordToDelete.id}/`, {
         headers: { Authorization: `Bearer ${token}` }, // Include the token in the headers
       });
       // Remove the deleted record from the state

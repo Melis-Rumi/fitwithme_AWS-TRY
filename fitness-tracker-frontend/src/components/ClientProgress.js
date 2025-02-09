@@ -7,7 +7,7 @@ const ClientProgress = () => {
   const [progress, setProgress] = useState([]);
 
   useEffect(() => {
-    axios.get(`http://127.0.0.1:8000/api/progress/?client=${id}`)
+    axios.get(`https://fitwithme.onrender.com/api/progress/?client=${id}`)
       .then(response => setProgress(response.data))
       .catch(error => console.error(error));
   }, [id]);

@@ -32,7 +32,7 @@ const Signup = () => {
     setError('');
 
     try {
-      const response = await axios.post('http://127.0.0.1:8000/user-credentials/', formData, {
+      const response = await axios.post('https://fitwithme.onrender.com/user-credentials/', formData, {
         headers: {
           'Content-Type': 'application/json',
         },
