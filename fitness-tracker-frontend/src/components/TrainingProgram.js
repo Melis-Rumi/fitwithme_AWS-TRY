@@ -13,7 +13,7 @@ const TrainingProgram = () => {
 
   const fetchProgram = async (programId) => {
     try {
-      const response = await axios.get(`https://fitwithme.onrender.com/api/training-program/${programId}/`, {
+      const response = await axios.get(`http://127.0.0.1:8000/api/training-program/${programId}/`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setCurrentProgram(programId);
@@ -25,7 +25,7 @@ const TrainingProgram = () => {
 
   const fetchLatestProgram = async () => {
     try {
-      const response = await axios.get('https://fitwithme.onrender.com/api/training-program/latest/', {
+      const response = await axios.get('http://127.0.0.1:8000/api/training-program/latest/', {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (response.data && response.data.program_id) {
@@ -38,7 +38,7 @@ const TrainingProgram = () => {
 
   const createNewProgram = async () => {
     try {
-      const response = await axios.post('https://fitwithme.onrender.com/api/training-program/', {}, {
+      const response = await axios.post('http://127.0.0.1:8000/api/training-program/', {}, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setCurrentProgram(response.data.program_id);
@@ -50,7 +50,7 @@ const TrainingProgram = () => {
 
   const addWeek = async () => {
     try {
-      await axios.post(`https://fitwithme.onrender.com/api/training-program/${currentProgram}/add-week/`, {}, {
+      await axios.post(`http://127.0.0.1:8000/api/training-program/${currentProgram}/add-week/`, {}, {
         headers: { Authorization: `Bearer ${token}` }
       });
       fetchProgram(currentProgram);
@@ -65,6 +65,7 @@ const TrainingProgram = () => {
 
   useEffect(() => {
     fetchLatestProgram();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
