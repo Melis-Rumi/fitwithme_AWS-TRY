@@ -5,13 +5,21 @@ import 'react-calendar/dist/Calendar.css'; // Default calendar styling
 import './Home.css'; // Custom styling for the calendar and page
 import { AuthContext } from '../AuthContext'; // Import the AuthContext
 import axios from 'axios';
+import { UserContext } from './UserContext';
 
 const Home = () => {
+  const { userId } = useContext(UserContext); // Get userId from context
   const [date, setDate] = useState(new Date()); // Selected date
   const [records, setRecords] = useState({}); // Stores records for each date
   const navigate = useNavigate();
   const { token } = useContext(AuthContext); // Access the token from context
-
+  useEffect(() => {
+      // Check for token immediately when component mounts
+      if (!token) {
+        navigate('/login');
+        return;
+      }
+    }, [token, navigate]);
   // Fetch cardio and training records for all dates
   useEffect(() => {
     const fetchRecords = async () => {
@@ -21,13 +29,18 @@ const Home = () => {
           return;
         }
         // Fetch cardio records
-        const cardioResponse = await axios.get('https://fitwithme.onrender.com/api/cardio_all/', {
+        const url = userId
+          ? `fitwithme.onrender.com/api/cardio_all/?__user_id=${userId}`
+          : `fitwithme.onrender.com/api/cardio_all/`;
+        const cardioResponse = await axios.get(url, {
           headers: { Authorization: `Bearer ${token}` }, // Include the token in the headers
         });
         const cardioData = cardioResponse.data;
-
+        const url1 = userId
+          ? `fitwithme.onrender.com/api/training_all/?__user_id=${userId}`
+          : `fitwithme.onrender.com/api/training_all/`;
         // Fetch training records
-        const trainingResponse = await axios.get('https://fitwithme.onrender.com/api/training_all/', {
+        const trainingResponse = await axios.get(url1, {
           headers: { Authorization: `Bearer ${token}` }, // Include the token in the headers
         });
         const trainingData = trainingResponse.data;
@@ -54,7 +67,7 @@ const Home = () => {
       }
     };
     fetchRecords();
-  }, [token]);
+  }, [token, userId]);
 
   // Handle date click
   const handleDateClick = (value) => {
@@ -78,7 +91,14 @@ const Home = () => {
             <div className="training-program">
               {record.training[0].exercise.muscle_group.name } {/* Display the first muscle group */}
             </div>
-          ))|| "Rest" }
+          ))
+          || (record?.cardio?.length > 0 && (
+            <div className="training-program">
+              {"Cardio" } {/* Display the first muscle group */}
+            </div>
+          ))
+          || <div> <div className="record-indicator">❌</div>Rest</div> 
+          }
         </div>
       );
     }
@@ -98,16 +118,16 @@ const Home = () => {
   };
 
   return (
-    <div className="home-container">
-      <h1>Fitness Tracker</h1>
-      <div className="calendar-container">
-        <Calendar
-          onChange={handleDateClick}
-          value={date}
-          tileContent={tileContent}
-          tileClassName={tileClassName}
-        />
-      </div>
+      <div className="home-container">
+        <h1>Welcome to your Fitness Tracker</h1>
+        <div className="calendar-container">
+          <Calendar
+            onChange={handleDateClick}
+            value={date}
+            tileContent={tileContent}
+            tileClassName={tileClassName}
+          />
+        </div>
     </div>
   );
 };

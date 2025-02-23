@@ -1,16 +1,28 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { AuthContext } from '../AuthContext'; // Import the AuthContext
+import { UserContext } from './UserContext';
 import './Training.css';
 
+
 const Training = () => {
+  const { userId } = useContext(UserContext); // Get userId from context
   const { date } = useParams();
   const { token } = useContext(AuthContext); // Access the token from context
   const [muscleGroups, setMuscleGroups] = useState([]);
   const [selectedMuscleGroup, setSelectedMuscleGroup] = useState('');
   const [exercises, setExercises] = useState([]); // Stores saved exercises as table rows
   const [newExercise, setNewExercise] = useState({ muscle: '', exercise: '', sets: '', reps: '', weight: '' });
+  const navigate = useNavigate();
+
+  // Redirect to login if no token is found
+  useEffect(() => {
+    if (!token) {
+      console.log('No token found. Redirecting to login...');
+      navigate('/login', { replace: true }); // Use `replace: true` to prevent back navigation
+    }
+  }, [token, navigate]);
 
   // Fetch muscle groups and their exercises
   useEffect(() => {
@@ -18,8 +30,9 @@ const Training = () => {
       console.error('No token found. User is not authenticated.');
       return;
     }
+
     axios
-      .get('https://fitwithme.onrender.com/api/muscle-groups/', {
+      .get('fitwithme.onrender.com/api/muscle-groups/', {
         headers: { Authorization: `Bearer ${token}` }, // Include the token in the headers
       })
       .then((response) => {
@@ -36,8 +49,11 @@ const Training = () => {
       console.error('No token found. User is not authenticated.');
       return;
     }
+    const url = userId
+      ? `fitwithme.onrender.com/api/training/${date}/?__user_id=${userId}`
+      : `fitwithme.onrender.com/api/training/${date}/`;
     axios
-      .get(`https://fitwithme.onrender.com/api/training/${date}/`, {
+      .get(url, {
         headers: { Authorization: `Bearer ${token}` }, // Include the token in the headers
       })
       .then((response) => {
@@ -46,7 +62,7 @@ const Training = () => {
       .catch((error) => {
         console.error('Error fetching saved exercises:', error);
       });
-  }, [date, token]);
+  }, [date, token, userId]);
 
   // Handle muscle group selection
   const handleMuscleGroupChange = (e) => {
@@ -68,21 +84,30 @@ const Training = () => {
         alert('You must be logged in to save training data.');
         return;
       }
+
       if (!newExercise.muscle || !newExercise.exercise || !newExercise.sets || !newExercise.reps || !newExercise.weight) {
         alert('Please fill in all fields before saving.');
         return;
       }
+
       // Save the current exercise to the backend
+      const url1 = userId
+      ? `fitwithme.onrender.com/api/training/?__user_id=${userId}`
+      : `fitwithme.onrender.com/api/training/`;
       await axios.post(
-        'https://fitwithme.onrender.com/api/training/',
+        url1,
         { ...newExercise, date }, // Include the muscle field in the payload
         { headers: { Authorization: `Bearer ${token}` } } // Include the token in the headers
       );
+      const url2 = userId
+      ? `fitwithme.onrender.com/api/training/${date}/?__user_id=${userId}`
+      : `fitwithme.onrender.com/api/training/${date}/`;
       // Fetch updated exercises from the backend
-      const response = await axios.get(`https://fitwithme.onrender.com/api/training/${date}/`, {
+      const response = await axios.get(url2, {
         headers: { Authorization: `Bearer ${token}` }, // Include the token in the headers
       });
       setExercises(response.data);
+
       // Clear the form after saving
       setNewExercise({ muscle: '', exercise: '', sets: '', reps: '', weight: '' });
       alert('Training data saved successfully!');
@@ -98,10 +123,15 @@ const Training = () => {
         alert('You must be logged in to delete training data.');
         return;
       }
+      
       const recordToDelete = exercises[index];
-      await axios.delete(`https://fitwithme.onrender.com/api/training/${recordToDelete.id}/`, {
+      const url3 = userId
+      ? `fitwithme.onrender.com/api/training/${recordToDelete.id}/?__user_id=${userId}`
+      : `fitwithme.onrender.com/api/training/${recordToDelete.id}/`;
+      await axios.delete(url3, {
         headers: { Authorization: `Bearer ${token}` }, // Include the token in the headers
       });
+
       // Remove the deleted record from the state
       setExercises(exercises.filter((_, i) => i !== index));
       alert('Training record deleted successfully!');

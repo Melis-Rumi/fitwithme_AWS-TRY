@@ -1,11 +1,13 @@
 import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { UserContext } from './UserContext'; // Import UserContext
 import { AuthContext } from '../AuthContext';
 import './Login.css';
 
 const Login = () => {
   const { login } = useContext(AuthContext);
+  const { setUserId, setUsername } = useContext(UserContext); // Get setUserId and setUsername from UserContext
   const [formData, setFormData] = useState({
     username: '',
     password: '',
@@ -21,7 +23,7 @@ const Login = () => {
     e.preventDefault();
     setError('');
     try {
-      const response = await axios.post('https://fitwithme.onrender.com/login/', formData, {
+      const response = await axios.post('fitwithme.onrender.com/login/', formData, {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -29,8 +31,11 @@ const Login = () => {
       if (response.status === 200) {
         const token = response.data.token; // Extract the token from the response
         login(token); // Call the login function from AuthContext
+        const username = formData.username; // Get the username from the form data
+        setUserId(response.data.user_id); // Set the user ID in UserContext
+        setUsername(username); // Set the username in UserContext
         alert('Login successful!');
-        navigate('/');
+        navigate('/home');
       }
     } catch (error) {
       console.error('Error:', error.response?.data || error.message);
@@ -48,7 +53,7 @@ const Login = () => {
           type="text"
           name="username"
           placeholder="Username"
-          value={formData.username} // Fix this line
+          value={formData.username}
           onChange={handleChange}
           required
         />
@@ -64,7 +69,7 @@ const Login = () => {
       </form>
       <p>
         Don't have an account?{' '}
-        <span className="signup-link" onClick={() => navigate('/signup')}>
+        <span className="signup-link" onClick={() => navigate('/intro')}>
           Sign up
         </span>
       </p>

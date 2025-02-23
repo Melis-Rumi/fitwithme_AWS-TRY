@@ -44,7 +44,7 @@ from clients.views import (
     cardio_progress,
     training_progress,
     metrics_progress,
-    login,
+    login, logout,
     CreateUserAndClientView,
     create_training_program,
     get_training_program,
@@ -52,7 +52,10 @@ from clients.views import (
     update_training_day,
     training_day_exercises,
     delete_exercise,
-    ClientProfileView
+    ClientProfileView,
+    NutrientsSearchView,
+    some_protected_view,
+    ImpersonationStatusView
     )
     
 
@@ -75,7 +78,10 @@ urlpatterns = [
     path('csrf-token/', get_csrf_token, name='csrf_token'),
     path('create-user-and-client/', CreateUserAndClientView.as_view(), name='create_user_and_client'),
     path('login/', login, name='login'),
-
+    path('logout/', logout, name='logout'),
+    path('some-protected-view/', some_protected_view, name='some_protected_view'),
+    path('api/impersonation-status/', ImpersonationStatusView.as_view(), name='impersonation-status'),
+    path('api/nutrients/search/', NutrientsSearchView.as_view(), name='nutrients-search'),
      # Training Program URLs
     path('api/training-program/', create_training_program, name='create_training_program'),
     path('api/training-program/<int:program_id>/', get_training_program, name='get_training_program'),
@@ -86,10 +92,9 @@ urlpatterns = [
     path('api/training-day/<int:day_id>/', training_day_exercises, name='training_day_exercises'),
 
     path('api/training-program/latest/', LatestTrainingProgramView.as_view(), name='latest-training-program'),
-    path('api/training-program/', CreateTrainingProgramView.as_view(), name='create-training-program'),
-    path('api/training-program/<int:program_id>/add-week/', AddWeekToProgramView.as_view(), name='add-week-to-program'),
+    #path('api/training-program/', CreateTrainingProgramView.as_view(), name='create-training-program'),
+    #path('api/training-program/<int:program_id>/add-week/', AddWeekToProgramView.as_view(), name='add-week-to-program'),
 
-    
     # Exercise URLs
     path('exercise/<int:exercise_id>/', delete_exercise, name='delete_exercise'),
     path('api/client-profile/', ClientProfileView.as_view(), name='client-profile'),

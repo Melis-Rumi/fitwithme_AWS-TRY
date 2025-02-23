@@ -2,9 +2,11 @@ import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { AuthContext } from '../AuthContext';
+import { UserContext } from './UserContext';
 import './TrainingDay.css'; // Import the CSS file
 
 const TrainingDay = () => {
+  const { userId } = useContext(UserContext); // Get userId from context
   const { dayId } = useParams();
   const { token } = useContext(AuthContext);
   const [exercises, setExercises] = useState([]);
@@ -18,7 +20,10 @@ const TrainingDay = () => {
   // Fetch exercises and description
   const fetchExercises = useCallback(async () => {
     try {
-      const response = await axios.get(`https://fitwithme.onrender.com/api/training-day/${dayId}/`, {
+      const url = userId
+      ? `fitwithme.onrender.com/api/training-day/${dayId}/?__user_id=${userId}`
+      : `fitwithme.onrender.com/api/training-day/${dayId}/`;
+      const response = await axios.get(url, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setDescription(response.data.description || ''); // Set the description
@@ -26,7 +31,7 @@ const TrainingDay = () => {
     } catch (error) {
       console.error('Error fetching exercises:', error);
     }
-  }, [dayId, token]);
+  }, [dayId, token, userId]);
 
   useEffect(() => {
     fetchExercises();
@@ -36,7 +41,10 @@ const TrainingDay = () => {
   const handleAddExercise = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(`https://fitwithme.onrender.com/api/training-day/${dayId}/`, newExercise, {
+      const url1 = userId
+      ? `fitwithme.onrender.com/api/training-day/${dayId}/?__user_id=${userId}`
+      : `fitwithme.onrender.com/api/training-day/${dayId}/`;
+      await axios.post(url1, newExercise, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setNewExercise({
@@ -53,7 +61,10 @@ const TrainingDay = () => {
   // Handle deleting an exercise
   const handleDeleteExercise = async (exerciseId) => {
     try {
-      await axios.delete(`https://fitwithme.onrender.com/api/exercise/${exerciseId}/`, {
+      const url2 = userId
+      ? `fitwithme.onrender.com/api/exercise/${exerciseId}/?__user_id=${userId}`
+      : `fitwithme.onrender.com/api/exercise/${exerciseId}/`;
+      await axios.delete(url2, {
         headers: { Authorization: `Bearer ${token}` }
       });
       fetchExercises();
@@ -65,7 +76,10 @@ const TrainingDay = () => {
   // Handle saving the description
   const handleSaveDescription = async () => {
     try {
-      await axios.put(`https://fitwithme.onrender.com/api/training-day/${dayId}/`, 
+      const url3 = userId
+      ? `fitwithme.onrender.com/api/training-day/${dayId}/?__user_id=${userId}`
+      : `fitwithme.onrender.com/api/training-day/${dayId}/`;
+      await axios.put(url3, 
         { description }, 
         { headers: { Authorization: `Bearer ${token}` } }
       );

@@ -1,10 +1,16 @@
 // ProfilePage.js
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect ,useContext } from 'react';
 import axios from 'axios';
 import { AuthContext } from '../AuthContext'; // Adjust the path as needed
+import { UserContext } from './UserContext';
 import './ProfilePage.css';
 
 const ProfilePage = () => {
+
+  const { userId } = useContext(UserContext); // Get userId from context
+  const url = userId
+  ? `fitwithme.onrender.com/api/client-profile/?__user_id=${userId}`
+  : 'fitwithme.onrender.com/api/client-profile/';
   const { token } = React.useContext(AuthContext); // Access the token from context
   const [profile, setProfile] = useState(null);
   const [editMode, setEditMode] = useState(false);
@@ -23,9 +29,10 @@ const ProfilePage = () => {
 
   // Fetch client profile on component mount
   useEffect(() => {
+    
     const fetchProfile = async () => {
       try {
-        const response = await axios.get('https://fitwithme.onrender.com/api/client-profile/', {
+        const response = await axios.get(url, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setProfile(response.data);
@@ -35,7 +42,7 @@ const ProfilePage = () => {
       }
     };
     fetchProfile();
-  }, [token]);
+  }, [url, token]);
 
   // Handle input changes
   const handleChange = (e) => {
@@ -46,7 +53,7 @@ const ProfilePage = () => {
   // Save updated profile
   const handleSave = async () => {
     try {
-      await axios.put('https://fitwithme.onrender.com/api/client-profile/', formData, {
+      await axios.put(url, formData, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setProfile(formData); // Update local state with new data

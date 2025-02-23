@@ -1,0 +1,118 @@
+
+
+.landing-container {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+
+.landing-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('./background.jpg');
+  background-size: cover;
+  background-position: center;
+  filter: brightness(0.6);
+  z-index: 1;
+}
+
+.content-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 2;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/*.auth-buttons {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 40px;
+  margin-top: 160px;
+  position: left;
+}*/
+
+.auth-buttons {
+  position: absolute; /* Position the buttons absolutely within the overlay */
+  top: 2rem; /* Adjust the top position as needed */
+  left: 2rem; /* Move the buttons to the left side */
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 0; /* Remove the bottom margin */
+}
+
+.landing-container .btn {
+  padding: 12px 72px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.landing-container .btn:hover {
+  transform: scale(1.05);
+}
+
+.landing-container .btn-signin {
+  background-color: transparent;
+  color: rgb(255, 255, 255);
+  border: 2px solid white;
+}
+
+.landing-container .btn-login {
+  background-color: transparent;
+  color: white;
+  border: 2px solid white;
+}
+
+.bio-section {
+  max-width: 600px;
+  padding: 40px;
+  padding-top: 250px;
+  border-radius: 16px;
+  text-align: justify;
+  position: absolute;
+  right: 0;
+  
+}
+
+.bio-content h1 {
+  color: rgb(125, 125, 125);
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.bio-content p {
+  color: rgb(161, 161, 161);
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+  .auth-buttons {
+    flex-direction: column;
+    width: 100%;
+    max-width: 280px;
+  }
+
+  .bio-content h1 {
+    font-size: 2rem;
+  }
+
+  .bio-content p {
+    font-size: 1rem;
+  }
+}

@@ -1,5 +1,6 @@
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import './Day.css';
 
 const Day = () => {
   const { date } = useParams(); // Get the date from the URL

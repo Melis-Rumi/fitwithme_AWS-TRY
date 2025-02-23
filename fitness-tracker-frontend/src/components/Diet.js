@@ -1,13 +1,20 @@
-import React, { useState, useEffect,useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import { AuthContext } from '../AuthContext'; // Import the AuthContext
+import { AuthContext } from '../AuthContext';
 import './Diet.css';
+import { UserContext } from './UserContext';
 
 const Diet = () => {
+  const { userId } = useContext(UserContext); // Get userId from context
   const { date } = useParams();
-  const { token } = useContext(AuthContext); // Access the token from context
-  const [dietRecords, setDietRecords] = useState([]); // Stores saved diet records
+  const { token } = useContext(AuthContext);
+  const [dietRecords, setDietRecords] = useState([]);
+  const [showFoodSearch, setShowFoodSearch] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [selectedFood, setSelectedFood] = useState(null);
+  const [gramAmount, setGramAmount] = useState('');
   const [formData, setFormData] = useState({
     total_calories: '',
     protein_intake: '',
@@ -22,9 +29,13 @@ const Diet = () => {
       return;
     }
 
+    const url = userId
+  ? `fitwithme.onrender.com/api/diet/${date}/?__user_id=${userId}`
+  : `fitwithme.onrender.com/api/diet/${date}/`;
+
     axios
-      .get(`https://fitwithme.onrender.com/api/diet/${date}/`, {
-        headers: { Authorization: `Bearer ${token}` }, // Include the token in the headers
+      .get(url, {
+        headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
         setDietRecords(response.data);
@@ -34,9 +45,58 @@ const Diet = () => {
       });
   }, [date, token]);
 
-  // Handle form input changes
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  // Handle food search
+  const handleSearchChange = async (e) => {
+    const query = e.target.value;
+    setSearchQuery(query);
+    
+    if (query.length >= 2) {
+      try {
+        const response = await axios.get(`fitwithme.onrender.com/api/nutrients/search/?search=${query}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setSearchResults(response.data);
+      } catch (error) {
+        console.error('Error searching foods:', error);
+      }
+    } else {
+      setSearchResults([]);
+    }
+  };
+
+  // Handle food selection
+  const handleFoodSelect = (food) => {
+    setSelectedFood(food);
+    setSearchQuery(food.name);
+    setSearchResults([]);
+    setGramAmount('100'); // Default to 100g
+    
+    // Calculate nutrients for 100g
+    updateNutrientValues(food, 100);
+  };
+
+  // Update nutrient values based on grams
+  const updateNutrientValues = (food, grams) => {
+    const multiplier = grams / 100;
+    setFormData({
+      total_calories: Math.round(food.calories * multiplier),
+      protein_intake: Math.round(food.protein * multiplier * 10) / 10,
+      carbs_intake: Math.round(food.carbohydrate * multiplier * 10) / 10,
+      fat_intake: Math.round(food.total_fat * multiplier * 10) / 10,
+    });
+  };
+
+  // Handle gram amount change
+  const handleGramChange = (e) => {
+    const grams = e.target.value;
+    setGramAmount(grams);
+    if (selectedFood && grams) {
+      updateNutrientValues(selectedFood, parseFloat(grams));
+    }
   };
 
   // Save the current diet record to the database
@@ -54,14 +114,14 @@ const Diet = () => {
 
       // Save the current diet record to the backend
       await axios.post(
-        'https://fitwithme.onrender.com/api/diet/',
+        'fitwithme.onrender.com/api/diet/',
         { ...formData, date },
-        { headers: { Authorization: `Bearer ${token}` } } // Include the token in the headers
+        { headers: { Authorization: `Bearer ${token}` } }
       );
 
       // Fetch updated diet records from the backend
-      const response = await axios.get(`https://fitwithme.onrender.com/api/diet/${date}/`, {
-        headers: { Authorization: `Bearer ${token}` }, // Include the token in the headers
+      const response = await axios.get(`fitwithme.onrender.com/api/diet/${date}/`, {
+        headers: { Authorization: `Bearer ${token}` },
       });
       setDietRecords(response.data);
 
@@ -72,6 +132,9 @@ const Diet = () => {
         carbs_intake: '',
         fat_intake: '',
       });
+      setSelectedFood(null);
+      setSearchQuery('');
+      setGramAmount('');
 
       alert('Diet data saved successfully!');
     } catch (error) {
@@ -88,8 +151,8 @@ const Diet = () => {
       }
 
       const recordToDelete = dietRecords[index];
-      await axios.delete(`https://fitwithme.onrender.com/api/diet/${recordToDelete.id}/`, {
-        headers: { Authorization: `Bearer ${token}` }, // Include the token in the headers
+      await axios.delete(`fitwithme.onrender.com/api/diet/${recordToDelete.id}/`, {
+        headers: { Authorization: `Bearer ${token}` },
       });
 
       // Remove the deleted record from the state
@@ -103,70 +166,121 @@ const Diet = () => {
   return (
     <div className="diet-container">
       <h1>Diet Log for {date}</h1>
+      
       {/* Saved Diet Records Table */}
-      <table className="diet-table">
-        <thead>
-          <tr>
-            <th>Total Calories</th>
-            <th>Protein Intake (g)</th>
-            <th>Carbs Intake (g)</th>
-            <th>Fat Intake (g)</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {dietRecords.map((record, index) => (
-            <tr key={index}>
-              <td>{record.total_calories}</td>
-              <td>{record.protein_intake}</td>
-              <td>{record.carbs_intake}</td>
-              <td>{record.fat_intake}</td>
-              <td>
-                <button onClick={() => handleDelete(index)}>Delete</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      {/* Diet Form */}
-      <div className="form-group">
-        <label>Total Calories:</label>
-        <input
-          type="number"
-          name="total_calories"
-          value={formData.total_calories}
-          onChange={handleChange}
-        />
+      {dietRecords.length > 0 && (
+        <div className="records-table-container">
+          <h2>Saved Records</h2>
+          <table className="diet-table">
+            <thead>
+              <tr>
+                <th>Total Calories</th>
+                <th>Protein Intake (g)</th>
+                <th>Carbs Intake (g)</th>
+                <th>Fat Intake (g)</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {dietRecords.map((record, index) => (
+                <tr key={index}>
+                  <td>{record.total_calories}</td>
+                  <td>{record.protein_intake}</td>
+                  <td>{record.carbs_intake}</td>
+                  <td>{record.fat_intake}</td>
+                  <td>
+                    <button onClick={() => handleDelete(index)}>Delete</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+      
+      <div className="input-section">
+        <button onClick={() => setShowFoodSearch(!showFoodSearch)}>
+          {showFoodSearch ? 'Hide Food Search' : 'Find Food'}
+        </button>
+
+        {showFoodSearch && (
+          <div className="food-search">
+            <div className="search-box">
+              <input
+                type="text"
+                placeholder="Search for a food..."
+                value={searchQuery}
+                onChange={handleSearchChange}
+                className="search-input"
+              />
+              {searchResults.length > 0 && (
+                <ul className="search-results">
+                  {searchResults.map((food) => (
+                    <li
+                      key={food.id}
+                      onClick={() => handleFoodSelect(food)}
+                      className="search-result-item"
+                    >
+                      {food.name}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+            
+            {selectedFood && (
+              <div className="gram-input">
+                <label>Amount (grams):</label>
+                <input
+                  type="number"
+                  value={gramAmount}
+                  onChange={handleGramChange}
+                  min="0"
+                  step="1"
+                />
+              </div>
+            )}
+          </div>
+        )}
+
+        <div className="form-group">
+          <label>Total Calories:</label>
+          <input
+            type="number"
+            name="total_calories"
+            value={formData.total_calories}
+            onChange={handleChange}
+          />
+        </div>
+        <div className="form-group">
+          <label>Protein Intake (g):</label>
+          <input
+            type="number"
+            name="protein_intake"
+            value={formData.protein_intake}
+            onChange={handleChange}
+          />
+        </div>
+        <div className="form-group">
+          <label>Carbs Intake (g):</label>
+          <input
+            type="number"
+            name="carbs_intake"
+            value={formData.carbs_intake}
+            onChange={handleChange}
+          />
+        </div>
+        <div className="form-group">
+          <label>Fat Intake (g):</label>
+          <input
+            type="number"
+            name="fat_intake"
+            value={formData.fat_intake}
+            onChange={handleChange}
+          />
+        </div>
+        <button onClick={handleSubmit}>Save</button>
       </div>
-      <div className="form-group">
-        <label>Protein Intake (g):</label>
-        <input
-          type="number"
-          name="protein_intake"
-          value={formData.protein_intake}
-          onChange={handleChange}
-        />
-      </div>
-      <div className="form-group">
-        <label>Carbs Intake (g):</label>
-        <input
-          type="number"
-          name="carbs_intake"
-          value={formData.carbs_intake}
-          onChange={handleChange}
-        />
-      </div>
-      <div className="form-group">
-        <label>Fat Intake (g):</label>
-        <input
-          type="number"
-          name="fat_intake"
-          value={formData.fat_intake}
-          onChange={handleChange}
-        />
-      </div>
-      {/* Save Button */}
-      <button onClick={handleSubmit}>Save</button>
     </div>
   );
 };

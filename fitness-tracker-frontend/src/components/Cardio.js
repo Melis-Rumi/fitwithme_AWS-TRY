@@ -3,8 +3,10 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { AuthContext } from '../AuthContext'; // Import the AuthContext
 import './Cardio.css';
+import { UserContext } from './UserContext';
 
 const Cardio = () => {
+  const { userId } = useContext(UserContext); // Get userId from context
   const { date } = useParams();
   const { token } = useContext(AuthContext); // Access the token from context
   const [cardioRecords, setCardioRecords] = useState([]); // Stores saved cardio records
@@ -20,8 +22,11 @@ const Cardio = () => {
       console.error('No token found. User is not authenticated.');
       return;
     }
+    const url = userId
+  ? `fitwithme.onrender.com/api/cardio/${date}/?__user_id=${userId}`
+  : `fitwithme.onrender.com/api/cardio/${date}/`;
     axios
-      .get(`https://fitwithme.onrender.com/api/cardio/${date}/`, {
+      .get(url, {
         headers: { Authorization: `Bearer ${token}` }, // Include the token in the headers
       })
       .then((response) => {
@@ -30,7 +35,7 @@ const Cardio = () => {
       .catch((error) => {
         console.error('Error fetching cardio records:', error);
       });
-  }, [date, token]);
+  }, [date, token, userId]);
 
   // Handle form input changes
   const handleChange = (e) => {
@@ -49,13 +54,19 @@ const Cardio = () => {
         return;
       }
       // Save the current cardio record to the backend
+      const url1 = userId
+      ? `fitwithme.onrender.com/api/cardio/?__user_id=${userId}`
+      : `fitwithme.onrender.com/api/cardio/`;
       await axios.post(
-        'https://fitwithme.onrender.com/api/cardio/',
+        url1,
         { ...formData, date },
         { headers: { Authorization: `Bearer ${token}` } } // Include the token in the headers
       );
       // Fetch updated cardio records from the backend
-      const response = await axios.get(`https://fitwithme.onrender.com/api/cardio/${date}/`, {
+      const url3 = userId
+      ? `fitwithme.onrender.com/api/cardio/${date}/?__user_id=${userId}`
+      : `fitwithme.onrender.com/api/cardio/${date}/`;
+      const response = await axios.get(url3, {
         headers: { Authorization: `Bearer ${token}` }, // Include the token in the headers
       });
       setCardioRecords(response.data);
@@ -75,7 +86,10 @@ const Cardio = () => {
         return;
       }
       const recordToDelete = cardioRecords[index];
-      await axios.delete(`https://fitwithme.onrender.com/api/cardio/${recordToDelete.id}/`, {
+      const url4 = userId
+      ? `fitwithme.onrender.com/api/cardio/${recordToDelete.id}/?__user_id=${userId}`
+      : `fitwithme.onrender.com/api/cardio/${recordToDelete.id}/`;
+      await axios.delete(url4, {
         headers: { Authorization: `Bearer ${token}` }, // Include the token in the headers
       });
       // Remove the deleted record from the state
@@ -117,9 +131,13 @@ const Cardio = () => {
         <label>Exercise:</label>
         <select name="exercise" value={formData.exercise} onChange={handleChange}>
           <option value="">Select an exercise</option>
+          <option value="Walking">Walking (fast or incline)</option>
+          <option value="Jogging">Jogging</option>
           <option value="Running">Running</option>
           <option value="Cycling">Cycling</option>
+          <option value="Cros">Cross-trainer</option>
           <option value="Swimming">Swimming</option>
+          <option value="Other">Other</option>
         </select>
       </div>
       <div className="form-group">

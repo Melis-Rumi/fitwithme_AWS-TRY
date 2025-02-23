@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 
 class Client(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='client')
     full_name = models.CharField(max_length=255)
     age = models.IntegerField()
     contact_number = models.CharField(max_length=15)
@@ -126,3 +126,28 @@ class ExerciseDay(models.Model):
     sets = models.IntegerField()
     reps = models.CharField(max_length=50)  # Using CharField to allow formats like "8-12"
     order = models.IntegerField(default=0)
+
+
+
+class Nutrients(models.Model):
+    name = models.CharField(max_length=150)
+    calories = models.FloatField()
+    total_fat = models.FloatField()
+    protein = models.FloatField()
+    carbohydrate = models.FloatField()
+    fiber = models.FloatField()
+    sugars = models.FloatField()
+
+    def __str__(self):
+        return self.name
+    
+
+
+
+class TrainerClient(models.Model):
+    trainer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='trainer_clients')  # Unique related_name
+    client = models.ForeignKey(User, on_delete=models.CASCADE, related_name='assigned_clients')  # Unique related_name
+    date_assigned = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('trainer', 'client')

@@ -1,26 +1,42 @@
 /* Home Container */
+
+body {
+  overflow-x: hidden;
+  color: #6d849d;
+}
+
+
 .home-container {
   max-width: 100%; /* Full width for responsiveness */
   margin: 0 auto;
-  padding: 10px; /* Reduced padding for smaller screens */
+  padding: 0px; /* Reduced padding for smaller screens */
+  margin-right: 0px;
+  margin-left: 0px;
+  margin-top: 20px;
+
   text-align: center;
 }
 
+
 .calendar-container {
   margin-top: 10px; /* Reduced margin for smaller screens */
+  margin-left:0px;
+  margin-right: 0px;
+  padding: 0 0 0 0;
 }
 
 /* Custom styles for react-calendar */
 .react-calendar {
   width: 100%; /* Full width to fit any screen */
   max-width: 600px; /* Default max-width for larger screens */
+  max-height: 0px;
   margin: 0 auto;
   border: 1px solid #ccc; /* Thinner border for mobile */
   border-radius: 8px; /* Slightly rounded corners */
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
   background-color: #fff;
   font-family: Arial, sans-serif;
-  font-size: 16px; /* Base font size */
+  font-size: 15px; /* Base font size */
 }
 
 /* Responsive adjustments for smaller screens */
@@ -51,7 +67,7 @@
 
 /* Navigation bar (month/year) */
 .react-calendar__navigation {
-  background-color: #007bff;
+  background-color: #485869;
   color: white;
   padding: 10px;
   border-top-left-radius: 8px;
@@ -99,12 +115,16 @@
   display: grid;
   grid-template-columns: repeat(7, 1fr); /* 7 columns for 7 days */
   gap: 0px; /* Reduced gap between tiles */
+  row-gap: 0px;
+  
 }
 
 .react-calendar__tile {
-  padding: 12px; /* Reduced padding */
+  padding: 5px; /* Reduced padding */
+  padding-top: 10px;
+  padding-bottom: 20px;
   text-align: center;
-  border-radius: 6px;
+  border-radius: 0px;
   background-color: #f9f9f9;
   border: 1px solid #eee;
   cursor: pointer;
@@ -120,7 +140,7 @@
 
 /* Selected Date */
 .react-calendar__tile--active {
-  background-color: #007bff;
+  background-color: #485869;
   color: white !important;
 }
 

@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-e26cvpcl5%(m&22&qh)1(3g1v&xny8szb3kwwv+m*9!x(k0%)^
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['fitwithme.onrender.com']
+ALLOWED_HOSTS = ['fitwithme.onrender.com', 'http://localhost:3000/']
 
 CORS_ORIGIN_ALLOW_ALL = True
 
@@ -49,9 +49,10 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'corsheaders.middleware.CorsMiddleware',  # Add this line at the top
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',  # Runs first
+    'fitness_tracker.middleware.ImpersonateUserMiddleware',  # Runs after AuthenticationMiddleware
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
@@ -64,7 +65,7 @@ ROOT_URLCONF = 'fitness_tracker.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],  # Add this line
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -76,7 +77,12 @@ TEMPLATES = [
         },
     },
 ]
-
+"""
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',  # Default backend
+    'fitness_tracker.backends.ImpersonationAuthBackend',  # Your new backend
+]
+"""
 WSGI_APPLICATION = 'fitness_tracker.wsgi.application'
 
 
@@ -128,6 +134,7 @@ DATABASES = {
         'PORT': '5432',                     # PostgreSQL default port
     }
 }
+
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 
@@ -188,6 +195,29 @@ CSRF_TRUSTED_ORIGINS = [
     "http://localhost:3000",
 ]
 
+CORS_ALLOW_CREDENTIALS = True
+CORS_ORIGIN_WHITELIST = [
+    'http://localhost:3000',  # Your React app URL
+]
+
+CORS_EXPOSE_HEADERS = ['Set-Cookie']
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+    'impersonate-user',
+]
+
+SESSION_COOKIE_SAMESITE = 'Lax'
+SESSION_COOKIE_SECURE = False  # Set to True if using HTTPS
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_DOMAIN = 'localhost'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -198,7 +228,7 @@ REST_FRAMEWORK = {
     ],
 }
 
-CORS_ALLOW_ALL_ORIGINS = True  # Allow all origins (for development only)
+#CORS_ALLOW_ALL_ORIGINS = True  # Allow all origins (for development only)
 
 
 from datetime import timedelta
@@ -209,3 +239,4 @@ SIMPLE_JWT = {
     'ROTATE_REFRESH_TOKENS': True,                # Allow refresh tokens to be rotated
     'BLACKLIST_AFTER_ROTATION': True,             # Blacklist old refresh tokens after rotation
 }
+

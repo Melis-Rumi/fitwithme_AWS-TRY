@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { useNavigate } from 'react-router-dom'; // Add this import
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Line } from 'react-chartjs-2';
 import {
@@ -16,6 +16,7 @@ import {
 import 'chartjs-adapter-date-fns';
 import './Progress.css';
 import { AuthContext } from '../AuthContext';
+import { UserContext } from './UserContext';
 
 // Register Chart.js components
 ChartJS.register(
@@ -30,7 +31,8 @@ ChartJS.register(
 );
 
 const Progress = () => {
-  const navigate = useNavigate(); // Use the hook here
+  const { userId } = useContext(UserContext);
+  const navigate = useNavigate();
   const { token } = useContext(AuthContext);
   const [expandedSection, setExpandedSection] = useState(null);
   const [timeRange, setTimeRange] = useState('month');
@@ -41,52 +43,55 @@ const Progress = () => {
   const [selectedMetric, setSelectedMetric] = useState('weight');
   const [selectedExercise, setSelectedExercise] = useState('');
   const [selectedNutrient, setSelectedNutrient] = useState('total_calories');
+  const [view, setView] = useState('graph'); // 'graph' or 'table'
 
   useEffect(() => {
-    // Check for token immediately when component mounts
     if (!token) {
       navigate('/login');
       return;
     }
   }, [token, navigate]);
 
-  // Fetch data for all sections
   useEffect(() => {
     const fetchData = async () => {
       try {
-        if (!token) return; // Skip the API calls if there's no token
+        if (!token) return;
 
         const headers = {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json'
         };
 
-        const dietResponse = await axios.get(
-          `https://fitwithme.onrender.com/api/progress/diet/?range=${timeRange}`,
-          { headers }
-        );
+        const url1 = userId
+          ? `fitwithme.onrender.com/api/progress/diet/?range=${timeRange}&__user_id=${userId}`
+          : `fitwithme.onrender.com/api/progress/diet/?range=${timeRange}`;
+
+        const url2 = userId
+          ? `fitwithme.onrender.com/api/progress/cardio/?range=${timeRange}&__user_id=${userId}`
+          : `fitwithme.onrender.com/api/progress/cardio/?range=${timeRange}`;
+
+        const url3 = userId
+          ? `fitwithme.onrender.com/api/progress/training/?range=${timeRange}&__user_id=${userId}`
+          : `fitwithme.onrender.com/api/progress/training/?range=${timeRange}`;
+
+        const url4 = userId
+          ? `fitwithme.onrender.com/api/progress/metrics/?range=${timeRange}&__user_id=${userId}`
+          : `fitwithme.onrender.com/api/progress/metrics/?range=${timeRange}`;
+
+        const dietResponse = await axios.get(url1, { headers });
         setDietData(dietResponse.data || []);
 
-        const cardioResponse = await axios.get(
-          `https://fitwithme.onrender.com/api/progress/cardio/?range=${timeRange}`,
-          { headers }
-        );
+        const cardioResponse = await axios.get(url2, { headers });
         setCardioData(cardioResponse.data || []);
 
-        const trainingResponse = await axios.get(
-          `https://fitwithme.onrender.com/api/progress/training/?range=${timeRange}`,
-          { headers }
-        );
+        const trainingResponse = await axios.get(url3, { headers });
         setTrainingData(trainingResponse.data || []);
 
-        const metricsResponse = await axios.get(
-          `https://fitwithme.onrender.com/api/progress/metrics/?range=${timeRange}`,
-          { headers }
-        );
+        const metricsResponse = await axios.get(url4, { headers });
         setMetricsData(metricsResponse.data || []);
       } catch (error) {
         if (error.response?.status === 401) {
-          console.error( error);
+          console.error(error);
         } else {
           console.error('Error fetching progress data:', error);
         }
@@ -94,9 +99,8 @@ const Progress = () => {
     };
 
     fetchData();
-  }, [timeRange, token, navigate]);
+  }, [timeRange, token, navigate, userId]);
 
-  // Update selectedExercise when trainingData changes
   useEffect(() => {
     if (trainingData.length > 0) {
       const uniqueExercises = [...new Set(
@@ -110,21 +114,63 @@ const Progress = () => {
     }
   }, [trainingData]);
 
-  // Toggle section expansion
   const toggleSection = (section) => {
     setExpandedSection(expandedSection === section ? null : section);
   };
 
-  // Helper function to sort data by date
   const sortByDate = (data) => {
-    return data.sort((a, b) => new Date(a.date) - new Date(b.date));
+    return data.sort((a, b) => new Date(b.date) - new Date(a.date));
   };
 
-  // Prepare chart data for Diet
+  const aggregateDataByDate = (data, key) => {
+    const aggregatedData = {};
+
+    data.forEach(record => {
+      const date = record.date;
+      if (!aggregatedData[date]) {
+        aggregatedData[date] = { date };
+      }
+      Object.keys(record).forEach(field => {
+        if (field !== 'date') {
+          aggregatedData[date][field] = (aggregatedData[date][field] || 0) + record[field];
+        }
+      });
+    });
+
+    return Object.values(aggregatedData).sort((a, b) => new Date(b.date) - new Date(a.date));
+  };
+
+  const renderTable = (data, columns) => {
+    if (data.length === 0) {
+      return <p>No data available for this time range.</p>;
+    }
+
+    return (
+      <table className="data-table">
+        <thead>
+          <tr>
+            {columns.map((column) => (
+              <th key={column}>{column}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {data.map((record, index) => (
+            <tr key={index}>
+              {columns.map((column) => (
+                <td key={column}>{record[column]}</td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    );
+  };
+
   const getDietChartData = () => {
-    const sortedData = sortByDate(dietData); // Sort data by date
+    const sortedData = sortByDate(dietData);
     return {
-      labels: sortedData.map((record) => new Date(record.date)), // Convert to Date objects
+      labels: sortedData.map((record) => new Date(record.date)),
       datasets: [
         {
           label: selectedNutrient,
@@ -137,11 +183,10 @@ const Progress = () => {
     };
   };
 
-  // Prepare chart data for Cardio
   const getCardioChartData = () => {
-    const sortedData = sortByDate(cardioData); // Sort data by date
+    const sortedData = sortByDate(cardioData);
     return {
-      labels: sortedData.map((record) => new Date(record.date)), // Convert to Date objects
+      labels: sortedData.map((record) => new Date(record.date)),
       datasets: [
         {
           label: 'Total Duration (minutes)',
@@ -154,14 +199,13 @@ const Progress = () => {
     };
   };
 
-  // Prepare chart data for Training
   const getTrainingChartData = () => {
     const filteredData = trainingData.filter(
       (record) => record.exercise.trim().toLowerCase() === selectedExercise
     );
-    const sortedData = sortByDate(filteredData); // Sort data by date
+    const sortedData = sortByDate(filteredData);
     return {
-      labels: sortedData.map((record) => new Date(record.date)), // Convert to Date objects
+      labels: sortedData.map((record) => new Date(record.date)),
       datasets: [
         {
           label: `Weight (${selectedExercise})`,
@@ -174,11 +218,10 @@ const Progress = () => {
     };
   };
 
-  // Prepare chart data for Metrics
   const getMetricsChartData = () => {
-    const sortedData = sortByDate(metricsData); // Sort data by date
+    const sortedData = sortByDate(metricsData);
     return {
-      labels: sortedData.map((record) => new Date(record.date)), // Convert to Date objects
+      labels: sortedData.map((record) => new Date(record.date)),
       datasets: [
         {
           label: selectedMetric,
@@ -191,7 +234,6 @@ const Progress = () => {
     };
   };
 
-  // Chart options
   const chartOptions = {
     responsive: true,
     plugins: {
@@ -205,21 +247,21 @@ const Progress = () => {
     },
     scales: {
       x: {
-        type: 'time', // Use a time scale for the x-axis
+        type: 'time',
         time: {
-          unit: 'day', // Display dates by day
-          tooltipFormat: 'MMM d, yyyy', // Format for tooltips
+          unit: 'day',
+          tooltipFormat: 'MMM d, yyyy',
           displayFormats: {
-            day: 'MMM d', // Format for x-axis labels
+            day: 'MMM d',
           },
         },
         ticks: {
-          maxRotation: 90, // Rotate labels vertically
+          maxRotation: 90,
           minRotation: 90,
         },
       },
       y: {
-        beginAtZero: true, // Start the y-axis at zero
+        beginAtZero: true,
       },
     },
   };
@@ -227,7 +269,13 @@ const Progress = () => {
   return (
     <div className="progress-container">
       <h1>Progress Tracker</h1>
-      {/* Time Range Selector */}
+      <div className="view-selector">
+        <label>View:</label>
+        <select value={view} onChange={(e) => setView(e.target.value)}>
+          <option value="graph">Graph</option>
+          <option value="table">Table</option>
+        </select>
+      </div>
       <div className="time-range-selector">
         <label>Time Range:</label>
         <select value={timeRange} onChange={(e) => setTimeRange(e.target.value)}>
@@ -237,7 +285,6 @@ const Progress = () => {
           <option value="year">1 Year</option>
         </select>
       </div>
-      {/* Diet Section */}
       <button onClick={() => toggleSection('diet')}>Diet</button>
       {expandedSection === 'diet' && (
         <div className="chart-section">
@@ -248,52 +295,64 @@ const Progress = () => {
             <option value="carbs_intake">Carbs</option>
             <option value="fat_intake">Fat</option>
           </select>
-          {dietData.length > 0 ? (
-            <Line data={getDietChartData()} options={chartOptions} />
+          {view === 'graph' ? (
+            dietData.length > 0 ? (
+              <Line data={getDietChartData()} options={chartOptions} />
+            ) : (
+              <p>No diet data available for this time range.</p>
+            )
           ) : (
-            <p>No diet data available for this time range.</p>
+            renderTable(aggregateDataByDate(dietData, selectedNutrient), ['date', selectedNutrient])
           )}
         </div>
       )}
-      {/* Cardio Section */}
       <button onClick={() => toggleSection('cardio')}>Cardio</button>
       {expandedSection === 'cardio' && (
         <div className="chart-section">
-          {cardioData.length > 0 ? (
-            <Line data={getCardioChartData()} options={chartOptions} />
-          ) : (
-            <p>No cardio data available for this time range.</p>
-          )}
-        </div>
-      )}
-      {/* Training Section */}
-      <button onClick={() => toggleSection('training')}>Training</button>
-      {expandedSection === 'training' && (
-        <div className="chart-section">
-          <label>Select Exercise:</label>
-          <select value={selectedExercise} onChange={(e) => setSelectedExercise(e.target.value)}>
-            {trainingData.length > 0 ? (
-              [...new Set(
-                trainingData
-                  .filter(record => record.exercise && typeof record.exercise === 'string')
-                  .map(record => record.exercise.trim().toLowerCase())
-              )].map((exercise) => (
-                <option key={exercise} value={exercise}>
-                  {exercise.charAt(0).toUpperCase() + exercise.slice(1)}
-                </option>
-              ))
+          {view === 'graph' ? (
+            cardioData.length > 0 ? (
+              <Line data={getCardioChartData()} options={chartOptions} />
             ) : (
-              <option value="">No exercises available</option>
-            )}
-          </select>
-          {trainingData.filter((record) => record.exercise.trim().toLowerCase() === selectedExercise).length > 0 ? (
-            <Line data={getTrainingChartData()} options={chartOptions} />
+              <p>No cardio data available for this time range.</p>
+            )
           ) : (
-            <p>No training data available for the selected exercise.</p>
+            renderTable(aggregateDataByDate(cardioData, 'total_duration'), ['date', 'total_duration'])
           )}
         </div>
       )}
-      {/* Metrics Section */}
+      <button onClick={() => toggleSection('training')}>Training</button>
+        {expandedSection === 'training' && (
+          <div className="chart-section">
+            <label>Select Exercise:</label>
+            <select value={selectedExercise} onChange={(e) => setSelectedExercise(e.target.value)}>
+              {trainingData.length > 0 ? (
+                [...new Set(
+                  trainingData
+                    .filter(record => record.exercise && typeof record.exercise === 'string')
+                    .map(record => record.exercise.trim().toLowerCase())
+                )].map((exercise) => (
+                  <option key={exercise} value={exercise}>
+                    {exercise.charAt(0).toUpperCase() + exercise.slice(1)}
+                  </option>
+                ))
+              ) : (
+                <option value="">No exercises available</option>
+              )}
+            </select>
+            {view === 'graph' ? (
+              trainingData.filter((record) => record.exercise.trim().toLowerCase() === selectedExercise).length > 0 ? (
+                <Line data={getTrainingChartData()} options={chartOptions} />
+              ) : (
+                <p>No training data available for the selected exercise.</p>
+              )
+            ) : (
+              renderTable(
+                sortByDate(trainingData.filter((record) => record.exercise.trim().toLowerCase() === selectedExercise)),
+                ['date', 'exercise', 'weight'] // Include all columns you want to display
+              )
+            )}
+          </div>
+        )}
       <button onClick={() => toggleSection('metrics')}>Body Metrics</button>
       {expandedSection === 'metrics' && (
         <div className="chart-section">
@@ -307,10 +366,14 @@ const Progress = () => {
             <option value="left_thigh">Left Thigh</option>
             <option value="right_thigh">Right Thigh</option>
           </select>
-          {metricsData.length > 0 ? (
-            <Line data={getMetricsChartData()} options={chartOptions} />
+          {view === 'graph' ? (
+            metricsData.length > 0 ? (
+              <Line data={getMetricsChartData()} options={chartOptions} />
+            ) : (
+              <p>No metrics data available for this time range.</p>
+            )
           ) : (
-            <p>No metrics data available for this time range.</p>
+            renderTable(aggregateDataByDate(metricsData, selectedMetric), ['date', selectedMetric])
           )}
         </div>
       )}

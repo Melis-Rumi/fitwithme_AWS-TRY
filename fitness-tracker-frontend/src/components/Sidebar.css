@@ -1,0 +1,105 @@
+/* General Styles */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    overflow-x: hidden; /* Prevent horizontal scrolling */
+  }
+  
+  .app-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+  
+  /* Top Bar */
+  .top-bar {
+    position: fixed; /* Fixed at the top */
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #333;
+    color: white;
+    display: flex;
+    justify-content: space-between; /* Align logo and hamburger button */
+    align-items: center;
+    padding: 10px 20px;
+    z-index: 1000;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  }
+  
+  .logo {
+    font-size: 24px;
+    font-weight: bold;
+    cursor: default;
+  }
+  
+  .menu-icon {
+    font-size: 28px;
+    cursor: pointer;
+  }
+  
+  /* Sidebar */
+  .sidebar {
+    background-color: #555;
+    color: rgb(255, 0, 0);
+    width: 250px;
+    height: calc(100vh - 60px); /* Subtract the height of the top bar */
+    position: fixed;
+    top: 60px; /* Height of the top bar */
+    left: -250px; /* Hidden by default (off-screen to the left) */
+    transition: left 0.4s ease; /* Smooth transition */
+    padding: 0px;
+    box-sizing: border-box;
+    z-index: 999; /* Ensure it appears above main content */
+  }
+  
+  .sidebar.open {
+    left: 0; /* Show sidebar */
+    margin-top: 55px;
+  }
+  
+  .sidebar ul {
+    list-style: none;
+    margin: 0;
+  }
+  
+  .sidebar ul li {
+    margin-bottom: 10px;
+  }
+  
+  .sidebar ul li a {
+    color: white;
+    text-decoration: none;
+    font-size: 1rem;
+  }
+  
+  .sidebar ul li a:hover {
+    text-decoration: underline;
+  }
+  
+  /* Main Content */
+  .main-content {
+    margin-top: 60px; /* Height of the top bar */
+    padding: 0px;
+    flex-grow: 1;
+    overflow-y: auto;
+    transition: margin-left 0.3s ease; /* Smooth transition for content shift */
+  }
+  
+  /* Adjust main content when sidebar is open */
+  .sidebar.open + .main-content {
+    margin-left: 0px; /* Push content to the right */
+  }
+  
+  /* Responsive Design */
+  @media (min-width: 768px) {
+    /* Sidebar behavior remains consistent on larger screens */
+    .sidebar {
+      left: -250px; /* Hidden by default */
+    }
+  
+    /* Main content adjustment remains consistent */
+    .main-content {
+      margin-left: 0; /* No margin by default */
+    }
+  }

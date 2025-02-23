@@ -25,7 +25,7 @@ const Metrics = () => {
       return;
     }
     axios
-      .get(`https://fitwithme.onrender.com/api/metrics/${date}/`, {
+      .get(`fitwithme.onrender.com/api/metrics/${date}/`, {
         headers: { Authorization: `Bearer ${token}` }, // Include the token in the headers
       })
       .then((response) => {
@@ -62,12 +62,12 @@ const Metrics = () => {
       }
       // Save the current metrics record to the backend
       await axios.post(
-        'https://fitwithme.onrender.com/api/metrics/',
+        'fitwithme.onrender.com/api/metrics/',
         { ...formData, date },
         { headers: { Authorization: `Bearer ${token}` } } // Include the token in the headers
       );
       // Fetch updated metrics records from the backend
-      const response = await axios.get(`https://fitwithme.onrender.com/api/metrics/${date}/`, {
+      const response = await axios.get(`fitwithme.onrender.com/api/metrics/${date}/`, {
         headers: { Authorization: `Bearer ${token}` }, // Include the token in the headers
       });
       setMetricsRecords(response.data);
@@ -95,7 +95,7 @@ const Metrics = () => {
         return;
       }
       const recordToDelete = metricsRecords[index];
-      await axios.delete(`https://fitwithme.onrender.com/api/metrics/${recordToDelete.id}/`, {
+      await axios.delete(`fitwithme.onrender.com/api/metrics/${recordToDelete.id}/`, {
         headers: { Authorization: `Bearer ${token}` }, // Include the token in the headers
       });
       // Remove the deleted record from the state
@@ -107,76 +107,89 @@ const Metrics = () => {
   };
 
   return (
-    <div>
-      <h1>Body Metrics for {date}</h1>
+    <div className="metrics-container">
+  <h1>Body Metrics for {date}</h1>
 
-      {/* Saved Metrics Records Table */}
-      <table>
-        <thead>
-          <tr>
-            <th>Weight (kg)</th>
-            <th>BMI</th>
-            <th>Chest (cm)</th>
-            <th>Waist (cm)</th>
-            <th>Glutes (cm)</th>
-            <th>Left Thigh (cm)</th>
-            <th>Right Thigh (cm)</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {metricsRecords.map((record, index) => (
-            <tr key={index}>
-              <td>{record.weight}</td>
-              <td>{record.bmi}</td>
-              <td>{record.chest}</td>
-              <td>{record.waist}</td>
-              <td>{record.glutes}</td>
-              <td>{record.left_thigh}</td>
-              <td>{record.right_thigh}</td>
-              <td>
-                <button onClick={() => handleDelete(index)}>Delete</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+  {/* Saved Metrics Records Table */}
+  <table className="metrics-table">
+    <thead>
+      <tr>
+        <th>Weight (kg)</th>
+        <th>BMI</th>
+        <th>Chest (cm)</th>
+        <th>Waist (cm)</th>
+        <th>Glutes (cm)</th>
+        <th>Left Thigh (cm)</th>
+        <th>Right Thigh (cm)</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {metricsRecords.map((record, index) => (
+        <tr key={index}>
+          <td>{record.weight}</td>
+          <td>{record.bmi}</td>
+          <td>{record.chest}</td>
+          <td>{record.waist}</td>
+          <td>{record.glutes}</td>
+          <td>{record.left_thigh}</td>
+          <td>{record.right_thigh}</td>
+          <td>
+            <button onClick={() => handleDelete(index)}>Delete</button>
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
 
-      {/* Metrics Form */}
-      <div>
-        <label>
-          Weight (kg):
-          <input type="number" name="weight" value={formData.weight} onChange={handleChange} />
-        </label>
-        <label>
-          BMI:
-          <input type="number" name="bmi" value={formData.bmi} onChange={handleChange} />
-        </label>
-        <label>
-          Chest (cm):
-          <input type="number" name="chest" value={formData.chest} onChange={handleChange} />
-        </label>
-        <label>
-          Waist (cm):
-          <input type="number" name="waist" value={formData.waist} onChange={handleChange} />
-        </label>
-        <label>
-          Glutes (cm):
-          <input type="number" name="glutes" value={formData.glutes} onChange={handleChange} />
-        </label>
-        <label>
-          Left Thigh (cm):
-          <input type="number" name="left_thigh" value={formData.left_thigh} onChange={handleChange} />
-        </label>
-        <label>
-          Right Thigh (cm):
-          <input type="number" name="right_thigh" value={formData.right_thigh} onChange={handleChange} />
-        </label>
-      </div>
-
-      {/* Save Button */}
-      <button onClick={handleSubmit}>Save</button>
+  {/* Metrics Form */}
+  <div className="metrics">
+    <div className="form-group">
+      <label>
+        Weight (kg):
+        <input type="number" name="weight" value={formData.weight} onChange={handleChange} />
+      </label>
     </div>
+    <div className="form-group">
+      <label>
+        BMI:
+        <input type="number" name="bmi" value={formData.bmi} onChange={handleChange} />
+      </label>
+    </div>
+    <div className="form-group">
+      <label>
+        Chest (cm):
+        <input type="number" name="chest" value={formData.chest} onChange={handleChange} />
+      </label>
+    </div>
+    <div className="form-group">
+      <label>
+        Waist (cm):
+        <input type="number" name="waist" value={formData.waist} onChange={handleChange} />
+      </label>
+    </div>
+    <div className="form-group">
+      <label>
+        Glutes (cm):
+        <input type="number" name="glutes" value={formData.glutes} onChange={handleChange} />
+      </label>
+    </div>
+    <div className="form-group">
+      <label>
+        Left Thigh (cm):
+        <input type="number" name="left_thigh" value={formData.left_thigh} onChange={handleChange} />
+      </label>
+    </div>
+    <div className="form-group">
+      <label>
+        Right Thigh (cm):
+        <input type="number" name="right_thigh" value={formData.right_thigh} onChange={handleChange} />
+      </label>
+    </div>
+
+    <button onClick={handleSubmit} className="save-matrics">Save</button>
+  </div>
+</div>
   );
 };
 

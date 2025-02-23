@@ -2,6 +2,8 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
 from rest_framework import viewsets
+
+from fitness_tracker.backends import ImpersonationAuthBackend
 from .models import TrainingProgram, MealPlan
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -32,10 +34,39 @@ from .models import (
 import json
 
 
+from django.contrib.auth import login
+from rest_framework.decorators import api_view, permission_classes, authentication_classes
+from rest_framework.permissions import IsAdminUser
+from rest_framework.response import Response
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from django.contrib.auth.models import User
+
+
+
+
 from django.contrib.auth import authenticate
+
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from django.http import JsonResponse
+from .models import TrainingRecord, CardioRecord, DietRecord, Progress
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
+
+def get_impersonated_user(request):
+    if 'impersonated_user_id' in request.session:
+        user_id = request.session['impersonated_user_id']
+        return User.objects.get(id=user_id)
+    return request.user
+
+
 
 
 def get_logged_in_client(request):
+    if hasattr(request.user, 'client'):
+            return request.user.client
     user = request.user
     print(f"Request user: {user}")  # Debugging statement
     if user.is_authenticated:
@@ -50,6 +81,45 @@ def get_logged_in_client(request):
     return None
 
 
+
+# views.py
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAdminUser
+from rest_framework.response import Response
+from django.contrib.auth.models import User
+
+@api_view(['GET'])
+@permission_classes([IsAdminUser])
+def some_protected_view(request):
+    # The `request.user` will already be replaced by the middleware
+    print(f'You are viewing this as {request.user.username}')
+    return Response({
+        'message': f'You are viewing this as {request.user.username}.',
+        'is_impersonating': getattr(request, 'is_impersonating', False),
+        'real_user': getattr(request, 'real_user', None).username if hasattr(request, 'real_user') else None,
+    })
+
+
+
+# views.py
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+
+class ImpersonationStatusView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        # Check if the user is impersonating someone
+        is_impersonating = getattr(request, 'is_impersonating', False)
+        impersonated_user_id = None
+        if is_impersonating:
+            impersonated_user_id = request.user.id  # The impersonated user's ID
+        
+        return Response({
+            'is_impersonating': is_impersonating,
+            'impersonated_user_id': impersonated_user_id,
+        })
 
 
 
@@ -105,42 +175,52 @@ class CreateUserAndClientView(APIView):
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-
-
-
-
-# views.py
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from django.contrib.auth import get_user_model
 from .models import Client
 from .serializers import ClientSerializer
+
+User = get_user_model()
 
 class ClientProfileView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
         try:
-            client = Client.objects.get(user=request.user)
+            # Check for an impersonated user in the session
+            if 'impersonated_user_id' in request.session:
+                user_id = request.session['impersonated_user_id']
+                user = User.objects.get(id=user_id)
+            else:
+                user = request.user
+
+            # Fetch the client profile for the user
+            client = Client.objects.get(user=user)
             serializer = ClientSerializer(client)
             return Response(serializer.data, status=200)
-        except Client.DoesNotExist:
+        except (Client.DoesNotExist, User.DoesNotExist):
             return Response({'error': 'Client profile not found'}, status=404)
 
     def put(self, request):
         try:
-            client = Client.objects.get(user=request.user)
+            # Check for an impersonated user in the session
+            if 'impersonated_user_id' in request.session:
+                user_id = request.session['impersonated_user_id']
+                user = User.objects.get(id=user_id)
+            else:
+                user = request.user
+
+            # Fetch the client profile for the user
+            client = Client.objects.get(user=user)
             serializer = ClientSerializer(client, data=request.data, partial=True)
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data, status=200)
             return Response(serializer.errors, status=400)
-        except Client.DoesNotExist:
+        except (Client.DoesNotExist, User.DoesNotExist):
             return Response({'error': 'Client profile not found'}, status=404)
-
-
-
-
 
 
 
@@ -197,7 +277,9 @@ logger = logging.getLogger(__name__)
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def cardio_view(request):
-    client = get_logged_in_client(request)
+
+    user = get_impersonated_user(request)
+    client = user.client
     if not client:
         return Response({'error': 'User not authenticated'}, status=401)
 
@@ -230,7 +312,8 @@ def cardio_view(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def training_view(request):
-    client = get_logged_in_client(request)
+    user = get_impersonated_user(request)
+    client = user.client
     if not client:
         return Response({'error': 'User not authenticated'}, status=401)
 
@@ -347,7 +430,19 @@ def login(request):
         }, status=status.HTTP_401_UNAUTHORIZED)
 
 
-
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def logout(request):
+    try:
+        refresh_token = request.data.get('refresh_token')
+        if refresh_token:
+            token = RefreshToken(refresh_token)
+            token.blacklist()
+            return Response({'message': 'Successfully logged out.'}, status=status.HTTP_200_OK)
+        else:
+            return Response({'error': 'Refresh token is required.'}, status=status.HTTP_400_BAD_REQUEST)
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET'])
@@ -362,6 +457,7 @@ def get_csrf_token(request):
 
 @method_decorator(csrf_exempt, name='dispatch')
 class ClientViewSet(viewsets.ModelViewSet):
+    permission_classes = []  # Allow unauthenticated access
     queryset = Client.objects.all()
     serializer_class = ClientSerializer
 
@@ -409,7 +505,9 @@ from .models import CardioRecord
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def all_cardio_records(request):
-    client = get_logged_in_client(request)
+
+    user = get_impersonated_user(request)
+    client = user.client
     if not client:
         return JsonResponse({'error': 'User not authenticated'}, status=401)
 
@@ -435,7 +533,8 @@ from .models import TrainingRecord
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def all_training_records(request):
-    client = get_logged_in_client(request)
+    user = get_impersonated_user(request)
+    client = user.client
     if not client:
         return JsonResponse({'error': 'User not authenticated'}, status=401)
 
@@ -483,21 +582,15 @@ def get_logged_in_client(request):
 
 
 
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-from django.http import JsonResponse
-from .models import TrainingRecord
+
+
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])  # Ensure the user is authenticated
+@permission_classes([IsAuthenticated])
 def training_records(request, date):
-    client = get_logged_in_client(request)
-    if not client:
-        return JsonResponse({'error': 'User not authenticated'}, status=401)
-
+    user = get_impersonated_user(request)
     try:
-        # Filter records by the logged-in client and the specified date
+        client = user.client
         records = TrainingRecord.objects.filter(client=client, date=date)
         data = [
             {
@@ -512,21 +605,13 @@ def training_records(request, date):
         return Response(data, status=200)
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
-    
-
-
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
-from django.http import JsonResponse
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def cardio_records(request, date):
-    client = get_logged_in_client(request)
-    if not client:
-        return JsonResponse({'error': 'User not authenticated'}, status=401)
-
+    user = get_impersonated_user(request)
     try:
+        client = user.client
         records = CardioRecord.objects.filter(client=client, date=date)
         data = [
             {
@@ -540,16 +625,13 @@ def cardio_records(request, date):
         return JsonResponse(data, safe=False)
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
-    
 
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
 def delete_cardio_record(request, record_id):
-    client = get_logged_in_client(request)
-    if not client:
-        return JsonResponse({'error': 'User not authenticated'}, status=401)
-
+    user = get_impersonated_user(request)
     try:
+        client = user.client
         record = CardioRecord.objects.get(id=record_id, client=client)
         record.delete()
         return JsonResponse({'message': 'Cardio record deleted successfully!'}, status=200)
@@ -561,11 +643,9 @@ def delete_cardio_record(request, record_id):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def diet_records(request, date):
-    client = get_logged_in_client(request)
-    if not client:
-        return JsonResponse({'error': 'User not authenticated'}, status=401)
-
+    user = get_impersonated_user(request)
     try:
+        client = user.client
         records = DietRecord.objects.filter(client=client, date=date)
         data = [
             {
@@ -584,11 +664,9 @@ def diet_records(request, date):
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
 def delete_diet_record(request, record_id):
-    client = get_logged_in_client(request)
-    if not client:
-        return JsonResponse({'error': 'User not authenticated'}, status=401)
-
+    user = get_impersonated_user(request)
     try:
+        client = user.client
         record = DietRecord.objects.get(id=record_id, client=client)
         record.delete()
         return JsonResponse({'message': 'Diet record deleted successfully!'}, status=200)
@@ -600,11 +678,9 @@ def delete_diet_record(request, record_id):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def metrics_records(request, date):
-    client = get_logged_in_client(request)
-    if not client:
-        return JsonResponse({'error': 'User not authenticated'}, status=401)
-
+    user = get_impersonated_user(request)
     try:
+        client = user.client
         records = Progress.objects.filter(client=client, date=date)
         data = [
             {
@@ -626,11 +702,9 @@ def metrics_records(request, date):
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
 def delete_metrics_record(request, record_id):
-    client = get_logged_in_client(request)
-    if not client:
-        return JsonResponse({'error': 'User not authenticated'}, status=401)
-
+    user = get_impersonated_user(request)
     try:
+        client = user.client
         record = Progress.objects.get(id=record_id, client=client)
         record.delete()
         return JsonResponse({'message': 'Metrics record deleted successfully!'}, status=200)
@@ -640,7 +714,7 @@ def delete_metrics_record(request, record_id):
         return JsonResponse({'error': str(e)}, status=500)
 
 
-        
+
 
 
 from datetime import timedelta
@@ -678,17 +752,13 @@ logger = logging.getLogger(__name__)
 @permission_classes([IsAuthenticated])
 def diet_progress(request):
     try:
-        auth = JWTAuthentication()
-        user_auth_tuple = auth.authenticate(request)
-        if user_auth_tuple is None:
-            logger.error("No user found in token")
-            return Response({'error': 'User not authenticated'}, status=401)
-        user, _ = user_auth_tuple
-        logger.info(f"Authenticated user: {user.id}")
+        user = get_impersonated_user(request)
+        client=user.client
+        print(f"Authenticated user: {user.id}")
 
         range_param = request.GET.get('range', 'month')
         start_date = get_time_range(range_param)
-        records = DietRecord.objects.filter(client=user.client, date__gte=start_date)
+        records = DietRecord.objects.filter(client=client, date__gte=start_date)
         data = [
             {
                 'date': record.date.strftime('%Y-%m-%d'),
@@ -715,7 +785,8 @@ from django.db.models import Sum
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def cardio_progress(request):
-    client = get_logged_in_client(request)
+    user = get_impersonated_user(request)
+    client = user.client
     if not client:
         return JsonResponse({'error': 'User not authenticated'}, status=401)
     try:
@@ -746,7 +817,8 @@ def cardio_progress(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def training_progress(request):
-    client = get_logged_in_client(request)
+    user = get_impersonated_user(request)
+    client = user.client
     if not client:
         return JsonResponse({'error': 'User not authenticated'}, status=401)
 
@@ -768,7 +840,8 @@ def training_progress(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def metrics_progress(request):
-    client = get_logged_in_client(request)
+    user = get_impersonated_user(request)
+    client = user.client
     if not client:
         return JsonResponse({'error': 'User not authenticated'}, status=401)
 
@@ -802,7 +875,8 @@ from .models import TrainingProgram, TrainingWeek, TrainingDay, ExerciseDay
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def create_training_program(request):
-    client = get_logged_in_client(request)
+    user = get_impersonated_user(request)
+    client = user.client
     if not client:
         return Response({'error': 'User not authenticated'}, status=401)
     
@@ -819,8 +893,11 @@ def create_training_program(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def add_week(request, program_id):
+    user = get_impersonated_user(request)
     program = get_object_or_404(TrainingProgram, program_id=program_id)
-    if program.client.user != request.user:
+    
+    # Check if the user is authorized to access this program
+    if program.client.user != user:
         return Response({'error': 'Not authorized'}, status=403)
     
     next_week_number = program.weeks.count() + 1
@@ -832,11 +909,15 @@ def add_week(request, program_id):
     
     return Response({'week_number': next_week_number}, status=201)
 
+
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_training_program(request, program_id):
+    user = get_impersonated_user(request)
     program = get_object_or_404(TrainingProgram, program_id=program_id)
-    if program.client.user != request.user:
+    
+    # Check if the user is authorized to access this program
+    if program.client.user != user:
         return Response({'error': 'Not authorized'}, status=403)
     
     weeks = []
@@ -854,33 +935,32 @@ def get_training_program(request, program_id):
     
     return Response({'weeks': weeks})
 
+
+
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def update_training_day(request, day_id):
+    user = get_impersonated_user(request)
     day = get_object_or_404(TrainingDay, id=day_id)
-    if day.week.program.client.user != request.user:
-        return Response({'error': 'Not authorized'}, status=403)
     
+    # Ensure the user is authorized to access this training day
+    if day.week.program.client.user != user:
+        return Response({'error': 'Not authorized'}, status=status.HTTP_403_FORBIDDEN)
+    
+    # Update the description of the training day
     day.description = request.data.get('description', '')
     day.save()
     return Response({'message': 'Updated successfully'})
 
 
-# views.py
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
-from rest_framework import status
-from django.shortcuts import get_object_or_404
-from .models import TrainingDay, ExerciseDay
-
 @api_view(['GET', 'POST', 'PUT'])
 @permission_classes([IsAuthenticated])
 def training_day_exercises(request, day_id):
+    user = get_impersonated_user(request)
     day = get_object_or_404(TrainingDay, id=day_id)
     
     # Ensure the user is authorized to access this training day
-    if day.week.program.client.user != request.user:
+    if day.week.program.client.user != user:
         return Response({'error': 'Not authorized'}, status=status.HTTP_403_FORBIDDEN)
     
     if request.method == 'GET':
@@ -919,13 +999,15 @@ def training_day_exercises(request, day_id):
         return Response({'error': 'Description cannot be empty'}, status=status.HTTP_400_BAD_REQUEST)
 
 
-# Add this to views.py
+
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
 def delete_exercise(request, exercise_id):
+    user = get_impersonated_user(request)
     exercise = get_object_or_404(ExerciseDay, id=exercise_id)
-    # Check if the user has permission to delete this exercise
-    if exercise.training_day.week.program.client.user != request.user:
+    
+    # Check if the user is authorized to delete this exercise
+    if exercise.training_day.week.program.client.user != user:
         return Response({'error': 'Not authorized'}, status=403)
     
     exercise.delete()
@@ -942,17 +1024,23 @@ from rest_framework import status
 from django.shortcuts import get_object_or_404
 from .models import TrainingProgram, TrainingWeek
 from .serializers import TrainingProgramSerializer
-
 class LatestTrainingProgramView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        # Get the latest training program for the authenticated client
-        latest_program = TrainingProgram.objects.filter(client=request.user.client).order_by('-created_at').first()
-        if latest_program:
-            serializer = TrainingProgramSerializer(latest_program)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response({"detail": "No training program found."}, status=status.HTTP_404_NOT_FOUND)
+        user = get_impersonated_user(request)
+        # Get all training programs for the client, sorted by creation date
+        programs = TrainingProgram.objects.filter(client=user.client).order_by('-created_at')
+        
+        if not programs.exists():
+            return Response({"detail": "No training programs found."}, status=status.HTTP_404_NOT_FOUND)
+        
+        # Serialize all programs
+        serializer = TrainingProgramSerializer(programs, many=True)
+        return Response({
+            "latest_program": TrainingProgramSerializer(programs.first()).data,  # Latest program
+            "all_programs": serializer.data  # All programs
+        }, status=status.HTTP_200_OK)
 
 class CreateTrainingProgramView(APIView):
     permission_classes = [IsAuthenticated]
@@ -972,3 +1060,32 @@ class AddWeekToProgramView(APIView):
         week_number = program.weeks.count() + 1  # Calculate the next week number
         week = TrainingWeek.objects.create(program=program, week_number=week_number)
         return Response({"detail": f"Week {week_number} added successfully."}, status=status.HTTP_201_CREATED)
+    
+
+
+# views.py
+from rest_framework import generics
+from rest_framework.response import Response
+from django.db.models import Q
+from .models import Nutrients
+from .serializers import NutrientsSerializer
+
+class NutrientsSearchView(generics.ListAPIView):
+    serializer_class = NutrientsSerializer
+    
+    def get_queryset(self):
+        query = self.request.query_params.get('search', '')
+        if query:
+            return Nutrients.objects.filter(name__icontains=query)[:10]
+        return Nutrients.objects.none()
+
+
+
+
+
+
+
+
+
+
+

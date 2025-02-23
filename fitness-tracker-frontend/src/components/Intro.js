@@ -24,7 +24,7 @@ const Intro = () => {
 
   // Fetch CSRF token when the component mounts
   useEffect(() => {
-    axios.get('https://fitwithme.onrender.com/csrf-token/')
+    axios.get('fitwithme.onrender.com/csrf-token/')
         .then(response => {
             setCsrfToken(response.data.csrfToken);
         })
@@ -61,7 +61,7 @@ const Intro = () => {
 
     try {
         const response = await axios.post(
-            'https://fitwithme.onrender.com/create-user-and-client/',
+            'fitwithme.onrender.com/create-user-and-client/',
             formData,
             {
                 headers: {
