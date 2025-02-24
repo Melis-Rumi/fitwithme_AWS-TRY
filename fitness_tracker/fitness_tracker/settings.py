@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-e26cvpcl5%(m&22&qh)1(3g1v&xny8szb3kwwv+m*9!x(k0%)^
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['https://fitwithme.onrender.com', 'http://localhost:3000/']
+ALLOWED_HOSTS = ['fitwithme.onrender.com', 'http://localhost:3000/']
 
 CORS_ORIGIN_ALLOW_ALL = True
 
@@ -174,9 +174,14 @@ STATIC_URL = '/static/'
 
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
-]
+# Create the static directory if it doesn't exist
+STATIC_DIR = os.path.join(BASE_DIR, 'static')
+if not os.path.exists(STATIC_DIR):
+    os.makedirs(STATIC_DIR)
+
+STATICFILES_DIRS = [STATIC_DIR]
+
+SESSION_COOKIE_SECURE = True
 # Static files (CSS, JavaScript, Images)
 
 # Default primary key field type
@@ -188,16 +193,16 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 CORS_ALLOWED_ORIGINS = [
-    'https://fitwithme.onrender.com', 'http://localhost:3000/',
+    'https://fitwithme.onrender.com', 'http://localhost:3000',
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://fitwithme.onrender.com', 'http://localhost:3000/',
+    'https://fitwithme.onrender.com', 'http://localhost:3000',
 ]
 
 CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_WHITELIST = [
-    'https://fitwithme.onrender.com', 'http://localhost:3000/',  # Your React app URL
+    'https://fitwithme.onrender.com', 'http://localhost:3000',  # Your React app URL
 ]
 
 CORS_EXPOSE_HEADERS = ['Set-Cookie']
