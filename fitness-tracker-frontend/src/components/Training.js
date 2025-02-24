@@ -32,7 +32,7 @@ const Training = () => {
     }
 
     axios
-      .get('fitwithme.onrender.com/api/muscle-groups/', {
+      .get('https://fitwithme.onrender.com/api/muscle-groups/', {
         headers: { Authorization: `Bearer ${token}` }, // Include the token in the headers
       })
       .then((response) => {
@@ -50,8 +50,8 @@ const Training = () => {
       return;
     }
     const url = userId
-      ? `fitwithme.onrender.com/api/training/${date}/?__user_id=${userId}`
-      : `fitwithme.onrender.com/api/training/${date}/`;
+      ? `https://fitwithme.onrender.com/api/training/${date}/?__user_id=${userId}`
+      : `https://fitwithme.onrender.com/api/training/${date}/`;
     axios
       .get(url, {
         headers: { Authorization: `Bearer ${token}` }, // Include the token in the headers
@@ -92,16 +92,16 @@ const Training = () => {
 
       // Save the current exercise to the backend
       const url1 = userId
-      ? `fitwithme.onrender.com/api/training/?__user_id=${userId}`
-      : `fitwithme.onrender.com/api/training/`;
+      ? `https://fitwithme.onrender.com/api/training/?__user_id=${userId}`
+      : `https://fitwithme.onrender.com/api/training/`;
       await axios.post(
         url1,
         { ...newExercise, date }, // Include the muscle field in the payload
         { headers: { Authorization: `Bearer ${token}` } } // Include the token in the headers
       );
       const url2 = userId
-      ? `fitwithme.onrender.com/api/training/${date}/?__user_id=${userId}`
-      : `fitwithme.onrender.com/api/training/${date}/`;
+      ? `https://fitwithme.onrender.com/api/training/${date}/?__user_id=${userId}`
+      : `https://fitwithme.onrender.com/api/training/${date}/`;
       // Fetch updated exercises from the backend
       const response = await axios.get(url2, {
         headers: { Authorization: `Bearer ${token}` }, // Include the token in the headers
@@ -126,8 +126,8 @@ const Training = () => {
       
       const recordToDelete = exercises[index];
       const url3 = userId
-      ? `fitwithme.onrender.com/api/training/${recordToDelete.id}/?__user_id=${userId}`
-      : `fitwithme.onrender.com/api/training/${recordToDelete.id}/`;
+      ? `https://fitwithme.onrender.com/api/training/${recordToDelete.id}/?__user_id=${userId}`
+      : `https://fitwithme.onrender.com/api/training/${recordToDelete.id}/`;
       await axios.delete(url3, {
         headers: { Authorization: `Bearer ${token}` }, // Include the token in the headers
       });

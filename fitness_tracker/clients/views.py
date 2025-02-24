@@ -354,7 +354,8 @@ def training_view(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def metrics_view(request):
-    client = get_logged_in_client(request)
+    user = get_impersonated_user(request)
+    client = user.client
     if not client:
         return Response({'error': 'User not authenticated'}, status=401)
 
@@ -971,10 +972,11 @@ def training_day_exercises(request, day_id):
             'exercise_name': ex.exercise_name,
             'sets': ex.sets,
             'reps': ex.reps,
+            'description': ex.description,  # Include the description in the response
             'order': ex.order
         } for ex in exercises]
         return Response({
-            'description': day.description,  # Include the description in the response
+            'description': day.description,  # Include the day description in the response
             'exercises': data
         })
     
@@ -985,6 +987,7 @@ def training_day_exercises(request, day_id):
             exercise_name=request.data['exercise_name'],
             sets=request.data['sets'],
             reps=request.data['reps'],
+            description=request.data.get('description', ''),  # Add description
             order=day.exercises.count()
         )
         return Response({'message': 'Exercise added successfully'}, status=status.HTTP_201_CREATED)

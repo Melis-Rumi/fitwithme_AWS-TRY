@@ -3,7 +3,7 @@
 /* General container */
 .container {
     padding: 1rem;
-    max-width: 64rem;
+    max-width: 40rem;
     margin: 0 auto;
   }
   
@@ -62,7 +62,7 @@
   }
   
   .delete-button {
-    background-color: #ef4444;
+    background-color: transparent;
     color: white;
     padding: 0.25rem 0.5rem;
     border: none;
@@ -71,7 +71,7 @@
   }
   
   .delete-button:hover {
-    background-color: #dc2626;
+    background-color: #374151;
   }
   
   /* Add New Exercise Form */

@@ -11,7 +11,7 @@ const Logout = () => {
   const handleLogout = async () => {
     try {
       // Call the backend logout endpoint
-      await axios.post('fitwithme.onrender.com/logout/', {
+      await axios.post('https://fitwithme.onrender.com/logout/', {
         refresh_token: localStorage.getItem('refreshToken'), // If you're storing the refresh token
       });
 

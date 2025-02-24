@@ -23,7 +23,7 @@ const Login = () => {
     e.preventDefault();
     setError('');
     try {
-      const response = await axios.post('fitwithme.onrender.com/login/', formData, {
+      const response = await axios.post('https://fitwithme.onrender.com/login/', formData, {
         headers: {
           'Content-Type': 'application/json',
         },

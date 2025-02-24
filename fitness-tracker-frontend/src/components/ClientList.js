@@ -5,7 +5,7 @@ import { UserContext } from './UserContext'; // Import UserContext
 
 const ClientList = () => {
   const [clients, setClients] = useState([]);
-  const { userId, setUserId, username } = useContext(UserContext); // Get userId, setUserId, and username from UserContext
+  const { setUserId, username } = useContext(UserContext); // Get userId, setUserId, and username from UserContext
   const navigate = useNavigate(); // For redirecting unauthorized users
 
   useEffect(() => {
@@ -20,7 +20,7 @@ const ClientList = () => {
   const fetchClients = () => {
     // Fetch client data from the API
     setUserId(null); // Clear userId
-    axios.get('fitwithme.onrender.com/clients/?format=json')
+    axios.get('https://fitwithme.onrender.com/clients/?format=json')
       .then(response => {
         console.log('Fetched clients:', response.data); // Debugging line
         setClients(response.data);

@@ -96,7 +96,7 @@ urlpatterns = [
     #path('api/training-program/<int:program_id>/add-week/', AddWeekToProgramView.as_view(), name='add-week-to-program'),
 
     # Exercise URLs
-    path('exercise/<int:exercise_id>/', delete_exercise, name='delete_exercise'),
+    path('api/exercise/<int:exercise_id>/', delete_exercise, name='delete_exercise'),
     path('api/client-profile/', ClientProfileView.as_view(), name='client-profile'),
     path('api/diet/', diet_view, name='diet_view'),
     path('api/cardio/', cardio_view, name='cardio_view'),

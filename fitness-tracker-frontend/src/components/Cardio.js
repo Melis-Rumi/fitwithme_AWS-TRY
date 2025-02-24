@@ -23,8 +23,8 @@ const Cardio = () => {
       return;
     }
     const url = userId
-  ? `fitwithme.onrender.com/api/cardio/${date}/?__user_id=${userId}`
-  : `fitwithme.onrender.com/api/cardio/${date}/`;
+  ? `https://fitwithme.onrender.com/api/cardio/${date}/?__user_id=${userId}`
+  : `https://fitwithme.onrender.com/api/cardio/${date}/`;
     axios
       .get(url, {
         headers: { Authorization: `Bearer ${token}` }, // Include the token in the headers
@@ -55,8 +55,8 @@ const Cardio = () => {
       }
       // Save the current cardio record to the backend
       const url1 = userId
-      ? `fitwithme.onrender.com/api/cardio/?__user_id=${userId}`
-      : `fitwithme.onrender.com/api/cardio/`;
+      ? `https://fitwithme.onrender.com/api/cardio/?__user_id=${userId}`
+      : `https://fitwithme.onrender.com/api/cardio/`;
       await axios.post(
         url1,
         { ...formData, date },
@@ -64,8 +64,8 @@ const Cardio = () => {
       );
       // Fetch updated cardio records from the backend
       const url3 = userId
-      ? `fitwithme.onrender.com/api/cardio/${date}/?__user_id=${userId}`
-      : `fitwithme.onrender.com/api/cardio/${date}/`;
+      ? `https://fitwithme.onrender.com/api/cardio/${date}/?__user_id=${userId}`
+      : `https://fitwithme.onrender.com/api/cardio/${date}/`;
       const response = await axios.get(url3, {
         headers: { Authorization: `Bearer ${token}` }, // Include the token in the headers
       });
@@ -87,8 +87,8 @@ const Cardio = () => {
       }
       const recordToDelete = cardioRecords[index];
       const url4 = userId
-      ? `fitwithme.onrender.com/api/cardio/${recordToDelete.id}/?__user_id=${userId}`
-      : `fitwithme.onrender.com/api/cardio/${recordToDelete.id}/`;
+      ? `https://fitwithme.onrender.com/api/cardio/${recordToDelete.id}/?__user_id=${userId}`
+      : `https://fitwithme.onrender.com/api/cardio/${recordToDelete.id}/`;
       await axios.delete(url4, {
         headers: { Authorization: `Bearer ${token}` }, // Include the token in the headers
       });

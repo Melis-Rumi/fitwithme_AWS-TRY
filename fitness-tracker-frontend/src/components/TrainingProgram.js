@@ -19,8 +19,8 @@ const TrainingProgram = () => {
   const fetchProgram = async (programId) => {
     try {
       const url = userId
-        ? `fitwithme.onrender.com/api/training-program/${programId}/?__user_id=${userId}`
-        : `fitwithme.onrender.com/api/training-program/${programId}/`;
+        ? `https://fitwithme.onrender.com/api/training-program/${programId}/?__user_id=${userId}`
+        : `https://fitwithme.onrender.com/api/training-program/${programId}/`;
 
       const response = await axios.get(url, {
         headers: { Authorization: `Bearer ${token}` }
@@ -36,8 +36,8 @@ const TrainingProgram = () => {
   const fetchLatestProgram = async () => {
     try {
       const url = userId
-        ? `fitwithme.onrender.com/api/training-program/latest/?__user_id=${userId}`
-        : `fitwithme.onrender.com/api/training-program/latest/`;
+        ? `https://fitwithme.onrender.com/api/training-program/latest/?__user_id=${userId}`
+        : `https://fitwithme.onrender.com/api/training-program/latest/`;
 
       const response = await axios.get(url, {
         headers: { Authorization: `Bearer ${token}` }
@@ -57,8 +57,8 @@ const TrainingProgram = () => {
   const createNewProgram = async () => {
     try {
       const url = userId
-        ? `fitwithme.onrender.com/api/training-program/?__user_id=${userId}`
-        : `fitwithme.onrender.com/api/training-program/`;
+        ? `https://fitwithme.onrender.com/api/training-program/?__user_id=${userId}`
+        : `https://fitwithme.onrender.com/api/training-program/`;
 
       const response = await axios.post(url, {}, {
         headers: { Authorization: `Bearer ${token}` }
@@ -75,8 +75,8 @@ const TrainingProgram = () => {
   const addWeek = async () => {
     try {
       const url = userId
-        ? `fitwithme.onrender.com/api/training-program/${currentProgram}/add-week/?__user_id=${userId}`
-        : `fitwithme.onrender.com/api/training-program/${currentProgram}/add-week/`;
+        ? `https://fitwithme.onrender.com/api/training-program/${currentProgram}/add-week/?__user_id=${userId}`
+        : `https://fitwithme.onrender.com/api/training-program/${currentProgram}/add-week/`;
 
       await axios.post(url, {}, {
         headers: { Authorization: `Bearer ${token}` },
@@ -127,7 +127,7 @@ const TrainingProgram = () => {
     </button>
     {currentProgram && (
       <button onClick={addWeek} className="add-week-button">
-        Add Week
+        ➕ Week
       </button>
     )}
   </div>

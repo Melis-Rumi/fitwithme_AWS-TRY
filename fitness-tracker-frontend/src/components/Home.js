@@ -30,15 +30,15 @@ const Home = () => {
         }
         // Fetch cardio records
         const url = userId
-          ? `fitwithme.onrender.com/api/cardio_all/?__user_id=${userId}`
-          : `fitwithme.onrender.com/api/cardio_all/`;
+          ? `https://fitwithme.onrender.com/api/cardio_all/?__user_id=${userId}`
+          : `https://fitwithme.onrender.com/api/cardio_all/`;
         const cardioResponse = await axios.get(url, {
           headers: { Authorization: `Bearer ${token}` }, // Include the token in the headers
         });
         const cardioData = cardioResponse.data;
         const url1 = userId
-          ? `fitwithme.onrender.com/api/training_all/?__user_id=${userId}`
-          : `fitwithme.onrender.com/api/training_all/`;
+          ? `https://fitwithme.onrender.com/api/training_all/?__user_id=${userId}`
+          : `https://fitwithme.onrender.com/api/training_all/`;
         // Fetch training records
         const trainingResponse = await axios.get(url1, {
           headers: { Authorization: `Bearer ${token}` }, // Include the token in the headers

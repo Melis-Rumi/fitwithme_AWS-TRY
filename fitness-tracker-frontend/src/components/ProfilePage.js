@@ -9,8 +9,8 @@ const ProfilePage = () => {
 
   const { userId } = useContext(UserContext); // Get userId from context
   const url = userId
-  ? `fitwithme.onrender.com/api/client-profile/?__user_id=${userId}`
-  : 'fitwithme.onrender.com/api/client-profile/';
+  ? `https://fitwithme.onrender.com/api/client-profile/?__user_id=${userId}`
+  : 'https://fitwithme.onrender.com/api/client-profile/';
   const { token } = React.useContext(AuthContext); // Access the token from context
   const [profile, setProfile] = useState(null);
   const [editMode, setEditMode] = useState(false);

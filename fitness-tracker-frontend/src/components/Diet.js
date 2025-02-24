@@ -30,8 +30,8 @@ const Diet = () => {
     }
 
     const url = userId
-  ? `fitwithme.onrender.com/api/diet/${date}/?__user_id=${userId}`
-  : `fitwithme.onrender.com/api/diet/${date}/`;
+  ? `https://fitwithme.onrender.com/api/diet/${date}/?__user_id=${userId}`
+  : `https://fitwithme.onrender.com/api/diet/${date}/`;
 
     axios
       .get(url, {
@@ -43,7 +43,7 @@ const Diet = () => {
       .catch((error) => {
         console.error('Error fetching diet records:', error);
       });
-  }, [date, token]);
+  }, [date, token, userId]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -56,7 +56,7 @@ const Diet = () => {
     
     if (query.length >= 2) {
       try {
-        const response = await axios.get(`fitwithme.onrender.com/api/nutrients/search/?search=${query}`, {
+        const response = await axios.get(`https://fitwithme.onrender.com/api/nutrients/search/?search=${query}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setSearchResults(response.data);
@@ -114,13 +114,13 @@ const Diet = () => {
 
       // Save the current diet record to the backend
       await axios.post(
-        'fitwithme.onrender.com/api/diet/',
+        'https://fitwithme.onrender.com/api/diet/',
         { ...formData, date },
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
       // Fetch updated diet records from the backend
-      const response = await axios.get(`fitwithme.onrender.com/api/diet/${date}/`, {
+      const response = await axios.get(`https://fitwithme.onrender.com/api/diet/${date}/`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setDietRecords(response.data);
@@ -151,7 +151,7 @@ const Diet = () => {
       }
 
       const recordToDelete = dietRecords[index];
-      await axios.delete(`fitwithme.onrender.com/api/diet/${recordToDelete.id}/`, {
+      await axios.delete(`https://fitwithme.onrender.com/api/diet/${recordToDelete.id}/`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 

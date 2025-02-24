@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useCallback } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { AuthContext } from '../AuthContext';
@@ -13,44 +13,46 @@ const TrainingDay = () => {
   const [newExercise, setNewExercise] = useState({
     exercise_name: '',
     sets: '',
-    reps: ''
+    reps: '',
+    description: '' // Add description field
   });
   const [description, setDescription] = useState('');
 
   // Fetch exercises and description
-  const fetchExercises = useCallback(async () => {
+  const fetchExercises = async () => {
     try {
       const url = userId
-      ? `fitwithme.onrender.com/api/training-day/${dayId}/?__user_id=${userId}`
-      : `fitwithme.onrender.com/api/training-day/${dayId}/`;
+        ? `https://fitwithme.onrender.com/api/training-day/${dayId}/?__user_id=${userId}`
+        : `https://fitwithme.onrender.com/api/training-day/${dayId}/`;
       const response = await axios.get(url, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setDescription(response.data.description || ''); // Set the description
+      setDescription(response.data.description || ''); // Set the day description
       setExercises(response.data.exercises); // Set the exercises
     } catch (error) {
       console.error('Error fetching exercises:', error);
     }
-  }, [dayId, token, userId]);
+  };
 
   useEffect(() => {
     fetchExercises();
-  }, [fetchExercises]);
+  }, [dayId, token, userId]);
 
   // Handle adding a new exercise
   const handleAddExercise = async (e) => {
     e.preventDefault();
     try {
       const url1 = userId
-      ? `fitwithme.onrender.com/api/training-day/${dayId}/?__user_id=${userId}`
-      : `fitwithme.onrender.com/api/training-day/${dayId}/`;
+        ? `https://fitwithme.onrender.com/api/training-day/${dayId}/?__user_id=${userId}`
+        : `https://fitwithme.onrender.com/api/training-day/${dayId}/`;
       await axios.post(url1, newExercise, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setNewExercise({
         exercise_name: '',
         sets: '',
-        reps: ''
+        reps: '',
+        description: '' // Reset description field
       });
       fetchExercises();
     } catch (error) {
@@ -62,8 +64,8 @@ const TrainingDay = () => {
   const handleDeleteExercise = async (exerciseId) => {
     try {
       const url2 = userId
-      ? `fitwithme.onrender.com/api/exercise/${exerciseId}/?__user_id=${userId}`
-      : `fitwithme.onrender.com/api/exercise/${exerciseId}/`;
+        ? `https://fitwithme.onrender.com/api/exercise/${exerciseId}/?__user_id=${userId}`
+        : `https://fitwithme.onrender.com/api/exercise/${exerciseId}/`;
       await axios.delete(url2, {
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -77,12 +79,9 @@ const TrainingDay = () => {
   const handleSaveDescription = async () => {
     try {
       const url3 = userId
-      ? `fitwithme.onrender.com/api/training-day/${dayId}/?__user_id=${userId}`
-      : `fitwithme.onrender.com/api/training-day/${dayId}/`;
-      await axios.put(url3, 
-        { description }, 
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+        ? `https://fitwithme.onrender.com/api/training-day/${dayId}/?__user_id=${userId}`
+        : `https://fitwithme.onrender.com/api/training-day/${dayId}/`;
+      await axios.put(url3, { description }, { headers: { Authorization: `Bearer ${token}` } });
       alert('Description saved successfully!');
     } catch (error) {
       console.error('Error saving description:', error);
@@ -114,6 +113,7 @@ const TrainingDay = () => {
               <th>Exercise</th>
               <th>Sets</th>
               <th>Reps</th>
+              <th>Description</th> {/* Add Description column */}
               <th>Actions</th>
             </tr>
           </thead>
@@ -123,12 +123,13 @@ const TrainingDay = () => {
                 <td>{exercise.exercise_name}</td>
                 <td>{exercise.sets}</td>
                 <td>{exercise.reps}</td>
+                <td>{exercise.description}</td> {/* Display description */}
                 <td>
                   <button
                     onClick={() => handleDeleteExercise(exercise.id)}
                     className="delete-button"
                   >
-                    Delete
+                    ❌
                   </button>
                 </td>
               </tr>
@@ -167,6 +168,16 @@ const TrainingDay = () => {
               onChange={(e) => setNewExercise({ ...newExercise, reps: e.target.value })}
               placeholder="e.g., '8-12' or '10'"
               required
+            />
+          </div>
+          <div>
+            <label>Description</label> {/* Add Description input */}
+            <input
+              type="text"
+              value={newExercise.description}
+              onChange={(e) => setNewExercise({ ...newExercise, description: e.target.value })}
+              placeholder="Optional description (max 100 characters)"
+              maxLength={100}
             />
           </div>
           <button type="submit">Add Exercise</button>

@@ -1,13 +1,12 @@
-import React, { useState, useContext } from 'react'; // Add useContext
+import React, { useState, useContext } from 'react';
+import { UserContext } from './UserContext';
 import logo from '../images/logo.png';
-import './Sidebar.css'; // Import the CSS for styling
-import { UserContext } from './UserContext'; // Import UserContext
+import './Sidebar.css';
 
 const Sidebar = ({ children }) => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false); // State to toggle sidebar visibility
-  const { username } = useContext(UserContext); // Get username from UserContext
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { username } = useContext(UserContext);
 
-  // Toggle sidebar visibility
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
@@ -16,37 +15,75 @@ const Sidebar = ({ children }) => {
     <div className="app-container">
       {/* Top Bar */}
       <div className="top-bar">
-        {/* Logo */}
         <div className="logo">
-          <a href='/home'>
-            <img src={logo} alt="MyLogo" style={{ height: '35px', width: 'auto' }} />
+          <a href="/home">
+            <img src={logo} alt="MyLogo" className="logo-image" />
           </a>
         </div>
-        {/* Hamburger Button */}
-        <div className="menu-icon" onClick={toggleMenu}>
-          ☰
-        </div>
+        <button className="menu-button" onClick={toggleMenu}>
+          <span className="menu-icon"></span>
+        </button>
       </div>
 
       {/* Sidebar */}
       <div className={`sidebar ${isMenuOpen ? 'open' : ''}`}>
-        <ul>
-          <li><a href='/home'>Home</a></li> {/* Correctly passing the url variable */}
-          <li><a href="/progress">Progress</a></li>
-          <li><a href="/trainingprogram">Training Program</a></li>
-          <li><a href="/profile">Profile</a></li>
-          {/* Conditionally render the Clients link */}
-          {username === 'rumi' && (
-            <li><a href="/clients">Clients</a></li>
-          )}
-          <li><a href="/logout">Logout</a></li>
-        </ul>
+        <div className="sidebar-content">
+          <nav className="nav-menu">
+            <ul>
+              <li>
+                <a href="/home" className="nav-link">
+                  <span className="nav-icon">🏠</span>
+                  <span className="nav-text">Home</span>
+                </a>
+              </li>
+              <li>
+                <a href="/progress" className="nav-link">
+                  <span className="nav-icon">📈</span>
+                  <span className="nav-text">Progress</span>
+                </a>
+              </li>
+              <li>
+                <a href="/trainingprogram" className="nav-link">
+                  <span className="nav-icon">💪</span>
+                  <span className="nav-text">Training Program</span>
+                </a>
+              </li>
+              <li>
+                <a href="/profile" className="nav-link">
+                  <span className="nav-icon">👤</span>
+                  <span className="nav-text">Profile</span>
+                </a>
+              </li>
+              {username === 'rumi' && (
+                <li>
+                  <a href="/clients" className="nav-link">
+                    <span className="nav-icon">👥</span>
+                    <span className="nav-text">Clients</span>
+                  </a>
+                </li>
+              )}
+            </ul>
+          </nav>
+          
+          <div className="sidebar-footer">
+            <a href="/logout" className="nav-link logout-link">
+              <span className="nav-icon">🚪</span>
+              <span className="nav-text">Logout</span>
+            </a>
+          </div>
+        </div>
       </div>
 
-      {/* Main Content (Injected via props.children) */}
-      <div className="main-content">
+      {/* Overlay */}
+      <div 
+        className={`sidebar-overlay ${isMenuOpen ? 'active' : ''}`} 
+        onClick={toggleMenu}
+      ></div>
+
+      {/* Main Content */}
+      <main className={`main-content ${isMenuOpen ? 'shifted' : ''}`}>
         {children}
-      </div>
+      </main>
     </div>
   );
 };

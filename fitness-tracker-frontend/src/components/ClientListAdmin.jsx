@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export const apiClient = axios.create({
-  baseURL: 'fitwithme.onrender.com',
+  baseURL: 'https://fitwithme.onrender.com',
   headers: {
     'Content-Type': 'application/json',
   },

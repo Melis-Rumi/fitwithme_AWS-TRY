@@ -125,6 +125,7 @@ class ExerciseDay(models.Model):
     exercise_name = models.CharField(max_length=255)
     sets = models.IntegerField()
     reps = models.CharField(max_length=50)  # Using CharField to allow formats like "8-12"
+    description = models.CharField(max_length=100, blank=True)  # New description field
     order = models.IntegerField(default=0)
 
 

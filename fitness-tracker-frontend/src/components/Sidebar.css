@@ -1,105 +1,244 @@
-/* General Styles */
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    overflow-x: hidden; /* Prevent horizontal scrolling */
-  }
+/* Base Styles */
+.app-container {
+  min-height: 100vh;
+}
+
+/* Top Bar */
+.top-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 70px;
+  background: #2e363f;
+  backdrop-filter: blur(10px);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 1.5rem;
+  z-index: 1000;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+}
+
+.logo-image {
+  height: 35px;
+  width: auto;
+  transition: transform 0.3s ease;
+}
+
+.logo-image:hover {
+  transform: scale(1.05);
+}
+
+/* Menu Button */
+.menu-button {
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: transparent;
+  position: relative;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.menu-icon {
+  width: 24px;
+  height: 2px;
+  background: white;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.menu-icon::before,
+.menu-icon::after {
+  content: '';
+  position: absolute;
+  width: 24px;
+  height: 2px;
+  background: white;
+  transition: all 0.3s ease;
+}
+
+.menu-icon::before {
+  transform: translateY(-8px);
+}
+
+.menu-icon::after {
+  transform: translateY(8px);
+}
+
+.open .menu-icon {
+  background: transparent;
+}
+
+.open .menu-icon::before {
+  transform: rotate(45deg);
+}
+
+.open .menu-icon::after {
+  transform: rotate(-45deg);
+}
+
+/* Sidebar */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: -300px;
+  width: 300px;
+  height: 100vh;
+  background: #2e363f;
+  backdrop-filter: blur(10px);
+  z-index: 999;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+}
+
+
+.sidebar-content {
+  flex-direction: column;
+  height: 100%;
+  background: #2e363f;
+}
+
+/* Navigation Menu */
+.nav-menu {
+  flex-grow: 1;
   
-  .app-container {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-  }
-  
-  /* Top Bar */
-  .top-bar {
-    position: fixed; /* Fixed at the top */
-    top: 0;
-    left: 0;
-    width: 100%;
-    background-color: #333;
-    color: white;
-    display: flex;
-    justify-content: space-between; /* Align logo and hamburger button */
-    align-items: center;
-    padding: 10px 20px;
-    z-index: 1000;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-  }
-  
-  .logo {
-    font-size: 24px;
-    font-weight: bold;
-    cursor: default;
-  }
-  
-  .menu-icon {
-    font-size: 28px;
-    cursor: pointer;
-  }
-  
-  /* Sidebar */
+}
+
+.nav-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  padding: 1rem 2rem;
+  color: #a3a3a3;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.nav-link:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.nav-link::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 3px;
+  background: linear-gradient(135deg, #3a7bd5, #00d2ff);
+  transform: scaleY(0);
+  transition: transform 0.2s ease;
+}
+
+.nav-link:hover::before {
+  transform: scaleY(1);
+}
+
+.nav-icon {
+  margin-right: 1rem;
+  font-size: 1.2rem;
+}
+
+.nav-text {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+/* Sidebar Footer */
+.sidebar-footer {
+  padding: 1rem 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.logout-link {
+  color: #ff4757;
+}
+
+.logout-link:hover {
+  background: rgba(255, 71, 87, 0.1);
+}
+
+/* Overlay */
+.sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  z-index: 998;
+}
+
+.sidebar-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Main Content */
+.main-content {
+  margin-top: 70px;
+  min-height: calc(100vh - 70px);
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  z-index: 1;
+}
+
+.main-content.shifted {
+  transform: translateX(200px);
+}
+
+/* Custom Scrollbar */
+.sidebar::-webkit-scrollbar {
+  width: 5px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #3a7bd5, #00d2ff);
+  border-radius: 3px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
   .sidebar {
-    background-color: #555;
-    color: rgb(255, 0, 0);
-    width: 250px;
-    height: calc(100vh - 60px); /* Subtract the height of the top bar */
-    position: fixed;
-    top: 60px; /* Height of the top bar */
-    left: -250px; /* Hidden by default (off-screen to the left) */
-    transition: left 0.4s ease; /* Smooth transition */
-    padding: 0px;
-    box-sizing: border-box;
-    z-index: 999; /* Ensure it appears above main content */
+    width: 280px;
+    left: -280px;
   }
-  
-  .sidebar.open {
-    left: 0; /* Show sidebar */
-    margin-top: 55px;
+
+
+  .main-content.shifted {
+    transform: translateX(0);
   }
-  
-  .sidebar ul {
-    list-style: none;
-    margin: 0;
+
+  .nav-link {
+    padding: 0.8rem 1.5rem;
   }
-  
-  .sidebar ul li {
-    margin-bottom: 10px;
+
+  .nav-text {
+    font-size: 0.9rem;
   }
-  
-  .sidebar ul li a {
-    color: white;
-    text-decoration: none;
-    font-size: 1rem;
-  }
-  
-  .sidebar ul li a:hover {
-    text-decoration: underline;
-  }
-  
-  /* Main Content */
-  .main-content {
-    margin-top: 60px; /* Height of the top bar */
-    padding: 0px;
-    flex-grow: 1;
-    overflow-y: auto;
-    transition: margin-left 0.3s ease; /* Smooth transition for content shift */
-  }
-  
-  /* Adjust main content when sidebar is open */
-  .sidebar.open + .main-content {
-    margin-left: 0px; /* Push content to the right */
-  }
-  
-  /* Responsive Design */
-  @media (min-width: 768px) {
-    /* Sidebar behavior remains consistent on larger screens */
-    .sidebar {
-      left: -250px; /* Hidden by default */
-    }
-  
-    /* Main content adjustment remains consistent */
-    .main-content {
-      margin-left: 0; /* No margin by default */
-    }
-  }
+}
