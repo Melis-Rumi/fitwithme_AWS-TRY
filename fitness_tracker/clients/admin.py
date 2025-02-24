@@ -1,7 +1,6 @@
 from urllib import request
 from django import forms
 from django.contrib import admin
-from django.views.decorators.csrf import csrf_exempt
 # Register your models here.
 
 from django.contrib import admin

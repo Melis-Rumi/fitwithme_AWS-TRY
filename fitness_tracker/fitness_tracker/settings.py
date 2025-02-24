@@ -188,16 +188,16 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
+    'fitwithme.onrender.com', 'http://localhost:3000/',
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:3000",
+    'fitwithme.onrender.com', 'http://localhost:3000/',
 ]
 
 CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_WHITELIST = [
-    'http://localhost:3000',  # Your React app URL
+    'fitwithme.onrender.com', 'http://localhost:3000/',  # Your React app URL
 ]
 
 CORS_EXPOSE_HEADERS = ['Set-Cookie']
@@ -214,10 +214,7 @@ CORS_ALLOW_HEADERS = [
     'impersonate-user',
 ]
 
-SESSION_COOKIE_SAMESITE = 'Lax'
-SESSION_COOKIE_SECURE = False  # Set to True if using HTTPS
-SESSION_COOKIE_HTTPONLY = True
-SESSION_COOKIE_DOMAIN = 'localhost'
+
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
