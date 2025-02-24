@@ -21,7 +21,7 @@
     "web-vitals": "^4.2.4"
   },
   "scripts": {
-    "start": "set NODE_OPTIONS=--openssl-legacy-provider && react-scripts start",
+    "start": "PORT=$PORT node --max-old-space-size=4096 ./node_modules/.bin/react-scripts start",
     "build": "set NODE_OPTIONS=--openssl-legacy-provider && react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
