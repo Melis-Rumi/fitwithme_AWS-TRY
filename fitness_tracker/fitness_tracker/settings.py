@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-e26cvpcl5%(m&22&qh)1(3g1v&xny8szb3kwwv+m*9!x(k0%)^
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['fitwithme.onrender.com', 'http://localhost:3000/']
+ALLOWED_HOSTS = ['https://fitwithme.onrender.com', 'http://localhost:3000/']
 
 CORS_ORIGIN_ALLOW_ALL = True
 
@@ -188,16 +188,16 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 CORS_ALLOWED_ORIGINS = [
-    'fitwithme.onrender.com', 'http://localhost:3000/',
+    'https://fitwithme.onrender.com', 'http://localhost:3000/',
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    'fitwithme.onrender.com', 'http://localhost:3000/',
+    'https://fitwithme.onrender.com', 'http://localhost:3000/',
 ]
 
 CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_WHITELIST = [
-    'fitwithme.onrender.com', 'http://localhost:3000/',  # Your React app URL
+    'https://fitwithme.onrender.com', 'http://localhost:3000/',  # Your React app URL
 ]
 
 CORS_EXPOSE_HEADERS = ['Set-Cookie']
