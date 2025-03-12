@@ -112,6 +112,7 @@ DATABASES = {
 }
 """
 """
+#local
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -122,8 +123,8 @@ DATABASES = {
         'PORT': '5432',                     # PostgreSQL default port
     }
 }
-"""
 
+#render
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -134,6 +135,20 @@ DATABASES = {
         'PORT': '5432',                     # PostgreSQL default port
     }
 }
+"""
+#AWS
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'fitwithmelisdb',          # Database name
+        'USER': 'fitwithmelis',             # Database user
+        'PASSWORD': '225588db',             # Database password
+        'HOST': 'localhost',                # Database host
+        'PORT': '',                     # PostgreSQL default port
+    }
+}
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
