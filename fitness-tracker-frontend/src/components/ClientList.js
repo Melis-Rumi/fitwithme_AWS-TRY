@@ -20,7 +20,7 @@ const ClientList = () => {
   const fetchClients = () => {
     // Fetch client data from the API
     setUserId(null); // Clear userId
-    axios.get('https://fitwithme.onrender.com/clients/?format=json')
+    axios.get('http://16.171.79.44/clients/?format=json')
       .then(response => {
         console.log('Fetched clients:', response.data); // Debugging line
         setClients(response.data);

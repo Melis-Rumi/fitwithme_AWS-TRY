@@ -30,8 +30,8 @@ const Diet = () => {
     }
 
     const url = userId
-  ? `https://fitwithme.onrender.com/api/diet/${date}/?__user_id=${userId}`
-  : `https://fitwithme.onrender.com/api/diet/${date}/`;
+  ? `http://16.171.79.44/api/diet/${date}/?__user_id=${userId}`
+  : `http://16.171.79.44/api/diet/${date}/`;
 
     axios
       .get(url, {
@@ -56,7 +56,7 @@ const Diet = () => {
     
     if (query.length >= 2) {
       try {
-        const response = await axios.get(`https://fitwithme.onrender.com/api/nutrients/search/?search=${query}`, {
+        const response = await axios.get(`http://16.171.79.44/api/nutrients/search/?search=${query}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setSearchResults(response.data);
@@ -114,13 +114,13 @@ const Diet = () => {
 
       // Save the current diet record to the backend
       await axios.post(
-        'https://fitwithme.onrender.com/api/diet/',
+        'http://16.171.79.44/api/diet/',
         { ...formData, date },
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
       // Fetch updated diet records from the backend
-      const response = await axios.get(`https://fitwithme.onrender.com/api/diet/${date}/`, {
+      const response = await axios.get(`http://16.171.79.44/api/diet/${date}/`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setDietRecords(response.data);
@@ -151,7 +151,7 @@ const Diet = () => {
       }
 
       const recordToDelete = dietRecords[index];
-      await axios.delete(`https://fitwithme.onrender.com/api/diet/${recordToDelete.id}/`, {
+      await axios.delete(`http://16.171.79.44/api/diet/${recordToDelete.id}/`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 

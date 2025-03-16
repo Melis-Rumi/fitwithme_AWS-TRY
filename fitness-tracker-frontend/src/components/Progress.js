@@ -63,20 +63,20 @@ const Progress = () => {
         };
 
         const url1 = userId
-          ? `https://fitwithme.onrender.com/api/progress/diet/?range=${timeRange}&__user_id=${userId}`
-          : `https://fitwithme.onrender.com/api/progress/diet/?range=${timeRange}`;
+          ? `http://16.171.79.44/api/progress/diet/?range=${timeRange}&__user_id=${userId}`
+          : `http://16.171.79.44/api/progress/diet/?range=${timeRange}`;
 
         const url2 = userId
-          ? `https://fitwithme.onrender.com/api/progress/cardio/?range=${timeRange}&__user_id=${userId}`
-          : `https://fitwithme.onrender.com/api/progress/cardio/?range=${timeRange}`;
+          ? `http://16.171.79.44/api/progress/cardio/?range=${timeRange}&__user_id=${userId}`
+          : `http://16.171.79.44/api/progress/cardio/?range=${timeRange}`;
 
         const url3 = userId
-          ? `https://fitwithme.onrender.com/api/progress/training/?range=${timeRange}&__user_id=${userId}`
-          : `https://fitwithme.onrender.com/api/progress/training/?range=${timeRange}`;
+          ? `http://16.171.79.44/api/progress/training/?range=${timeRange}&__user_id=${userId}`
+          : `http://16.171.79.44/api/progress/training/?range=${timeRange}`;
 
         const url4 = userId
-          ? `https://fitwithme.onrender.com/api/progress/metrics/?range=${timeRange}&__user_id=${userId}`
-          : `https://fitwithme.onrender.com/api/progress/metrics/?range=${timeRange}`;
+          ? `http://16.171.79.44/api/progress/metrics/?range=${timeRange}&__user_id=${userId}`
+          : `http://16.171.79.44/api/progress/metrics/?range=${timeRange}`;
 
         const dietResponse = await axios.get(url1, { headers });
         setDietData(dietResponse.data || []);

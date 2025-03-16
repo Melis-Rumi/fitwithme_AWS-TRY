@@ -22,8 +22,8 @@ const TrainingDay = () => {
   const fetchExercises = async () => {
     try {
       const url = userId
-        ? `https://fitwithme.onrender.com/api/training-day/${dayId}/?__user_id=${userId}`
-        : `https://fitwithme.onrender.com/api/training-day/${dayId}/`;
+        ? `http://16.171.79.44/api/training-day/${dayId}/?__user_id=${userId}`
+        : `http://16.171.79.44/api/training-day/${dayId}/`;
       const response = await axios.get(url, {
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -43,8 +43,8 @@ const TrainingDay = () => {
     e.preventDefault();
     try {
       const url1 = userId
-        ? `https://fitwithme.onrender.com/api/training-day/${dayId}/?__user_id=${userId}`
-        : `https://fitwithme.onrender.com/api/training-day/${dayId}/`;
+        ? `http://16.171.79.44/api/training-day/${dayId}/?__user_id=${userId}`
+        : `http://16.171.79.44/api/training-day/${dayId}/`;
       await axios.post(url1, newExercise, {
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -64,8 +64,8 @@ const TrainingDay = () => {
   const handleDeleteExercise = async (exerciseId) => {
     try {
       const url2 = userId
-        ? `https://fitwithme.onrender.com/api/exercise/${exerciseId}/?__user_id=${userId}`
-        : `https://fitwithme.onrender.com/api/exercise/${exerciseId}/`;
+        ? `http://16.171.79.44/api/exercise/${exerciseId}/?__user_id=${userId}`
+        : `http://16.171.79.44/api/exercise/${exerciseId}/`;
       await axios.delete(url2, {
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -79,8 +79,8 @@ const TrainingDay = () => {
   const handleSaveDescription = async () => {
     try {
       const url3 = userId
-        ? `https://fitwithme.onrender.com/api/training-day/${dayId}/?__user_id=${userId}`
-        : `https://fitwithme.onrender.com/api/training-day/${dayId}/`;
+        ? `http://16.171.79.44/api/training-day/${dayId}/?__user_id=${userId}`
+        : `http://16.171.79.44/api/training-day/${dayId}/`;
       await axios.put(url3, { description }, { headers: { Authorization: `Bearer ${token}` } });
       alert('Description saved successfully!');
     } catch (error) {

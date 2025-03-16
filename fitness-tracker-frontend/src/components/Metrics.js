@@ -28,8 +28,8 @@ const Metrics = () => {
     }
 
     const url = userId
-      ? `https://fitwithme.onrender.com/api/metrics/${date}/?__user_id=${userId}`
-      : `https://fitwithme.onrender.com/api/metrics/${date}/`;
+      ? `http://16.171.79.44/api/metrics/${date}/?__user_id=${userId}`
+      : `http://16.171.79.44/api/metrics/${date}/`;
 
     axios
       .get(url, {
@@ -82,8 +82,8 @@ const Metrics = () => {
 
       // Save the current metrics record to the backend
       const url1 = userId
-        ? `https://fitwithme.onrender.com/api/metrics/?__user_id=${userId}`
-        : `https://fitwithme.onrender.com/api/metrics/`;
+        ? `http://16.171.79.44/api/metrics/?__user_id=${userId}`
+        : `http://16.171.79.44/api/metrics/`;
       await axios.post(
         url1,
         { ...formData, date },
@@ -92,8 +92,8 @@ const Metrics = () => {
 
       // Fetch the latest metrics record from the backend
       const url2 = userId
-        ? `https://fitwithme.onrender.com/api/metrics/${date}/?__user_id=${userId}`
-        : `https://fitwithme.onrender.com/api/metrics/${date}/`;
+        ? `http://16.171.79.44/api/metrics/${date}/?__user_id=${userId}`
+        : `http://16.171.79.44/api/metrics/${date}/`;
       const response = await axios.get(url2, {
         headers: { Authorization: `Bearer ${token}` }, // Include the token in the headers
       });
