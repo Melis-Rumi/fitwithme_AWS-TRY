@@ -196,7 +196,7 @@ if not os.path.exists(STATIC_DIR):
 
 STATICFILES_DIRS = [STATIC_DIR]
 
-SESSION_COOKIE_SECURE = False
+SESSION_COOKIE_SECURE = True
 # Static files (CSS, JavaScript, Images)
 
 # Default primary key field type
