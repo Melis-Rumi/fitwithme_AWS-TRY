@@ -63,20 +63,20 @@ const Progress = () => {
         };
 
         const url1 = userId
-          ? `http://16.171.79.44/api/progress/diet/?range=${timeRange}&__user_id=${userId}`
-          : `http://16.171.79.44/api/progress/diet/?range=${timeRange}`;
+          ? `https://16.171.79.44/api/progress/diet/?range=${timeRange}&__user_id=${userId}`
+          : `https://16.171.79.44/api/progress/diet/?range=${timeRange}`;
 
         const url2 = userId
-          ? `http://16.171.79.44/api/progress/cardio/?range=${timeRange}&__user_id=${userId}`
-          : `http://16.171.79.44/api/progress/cardio/?range=${timeRange}`;
+          ? `https://16.171.79.44/api/progress/cardio/?range=${timeRange}&__user_id=${userId}`
+          : `https://16.171.79.44/api/progress/cardio/?range=${timeRange}`;
 
         const url3 = userId
-          ? `http://16.171.79.44/api/progress/training/?range=${timeRange}&__user_id=${userId}`
-          : `http://16.171.79.44/api/progress/training/?range=${timeRange}`;
+          ? `https://16.171.79.44/api/progress/training/?range=${timeRange}&__user_id=${userId}`
+          : `https://16.171.79.44/api/progress/training/?range=${timeRange}`;
 
         const url4 = userId
-          ? `http://16.171.79.44/api/progress/metrics/?range=${timeRange}&__user_id=${userId}`
-          : `http://16.171.79.44/api/progress/metrics/?range=${timeRange}`;
+          ? `https://16.171.79.44/api/progress/metrics/?range=${timeRange}&__user_id=${userId}`
+          : `https://16.171.79.44/api/progress/metrics/?range=${timeRange}`;
 
         const dietResponse = await axios.get(url1, { headers });
         setDietData(dietResponse.data || []);

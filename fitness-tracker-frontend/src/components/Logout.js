@@ -11,7 +11,7 @@ const Logout = () => {
   const handleLogout = async () => {
     try {
       // Call the backend logout endpoint
-      await axios.post('http://16.171.79.44/logout/', {
+      await axios.post('https://16.171.79.44/logout/', {
         refresh_token: localStorage.getItem('refreshToken'), // If you're storing the refresh token
       });
 

@@ -28,8 +28,8 @@ const Metrics = () => {
     }
 
     const url = userId
-      ? `http://16.171.79.44/api/metrics/${date}/?__user_id=${userId}`
-      : `http://16.171.79.44/api/metrics/${date}/`;
+      ? `https://16.171.79.44/api/metrics/${date}/?__user_id=${userId}`
+      : `https://16.171.79.44/api/metrics/${date}/`;
 
     axios
       .get(url, {
@@ -82,8 +82,8 @@ const Metrics = () => {
 
       // Save the current metrics record to the backend
       const url1 = userId
-        ? `http://16.171.79.44/api/metrics/?__user_id=${userId}`
-        : `http://16.171.79.44/api/metrics/`;
+        ? `https://16.171.79.44/api/metrics/?__user_id=${userId}`
+        : `https://16.171.79.44/api/metrics/`;
       await axios.post(
         url1,
         { ...formData, date },
@@ -92,8 +92,8 @@ const Metrics = () => {
 
       // Fetch the latest metrics record from the backend
       const url2 = userId
-        ? `http://16.171.79.44/api/metrics/${date}/?__user_id=${userId}`
-        : `http://16.171.79.44/api/metrics/${date}/`;
+        ? `https://16.171.79.44/api/metrics/${date}/?__user_id=${userId}`
+        : `https://16.171.79.44/api/metrics/${date}/`;
       const response = await axios.get(url2, {
         headers: { Authorization: `Bearer ${token}` }, // Include the token in the headers
       });

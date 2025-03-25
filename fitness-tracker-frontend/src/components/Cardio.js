@@ -23,8 +23,8 @@ const Cardio = () => {
       return;
     }
     const url = userId
-  ? `http://16.171.79.44/api/cardio/${date}/?__user_id=${userId}`
-  : `http://16.171.79.44/api/cardio/${date}/`;
+  ? `https://16.171.79.44/api/cardio/${date}/?__user_id=${userId}`
+  : `https://16.171.79.44/api/cardio/${date}/`;
     axios
       .get(url, {
         headers: { Authorization: `Bearer ${token}` }, // Include the token in the headers
@@ -55,8 +55,8 @@ const Cardio = () => {
       }
       // Save the current cardio record to the backend
       const url1 = userId
-      ? `http://16.171.79.44/api/cardio/?__user_id=${userId}`
-      : `http://16.171.79.44/api/cardio/`;
+      ? `https://16.171.79.44/api/cardio/?__user_id=${userId}`
+      : `https://16.171.79.44/api/cardio/`;
       await axios.post(
         url1,
         { ...formData, date },
@@ -64,8 +64,8 @@ const Cardio = () => {
       );
       // Fetch updated cardio records from the backend
       const url3 = userId
-      ? `http://16.171.79.44/api/cardio/${date}/?__user_id=${userId}`
-      : `http://16.171.79.44/api/cardio/${date}/`;
+      ? `https://16.171.79.44/api/cardio/${date}/?__user_id=${userId}`
+      : `https://16.171.79.44/api/cardio/${date}/`;
       const response = await axios.get(url3, {
         headers: { Authorization: `Bearer ${token}` }, // Include the token in the headers
       });
@@ -87,8 +87,8 @@ const Cardio = () => {
       }
       const recordToDelete = cardioRecords[index];
       const url4 = userId
-      ? `http://16.171.79.44/api/cardio/${recordToDelete.id}/?__user_id=${userId}`
-      : `http://16.171.79.44/api/cardio/${recordToDelete.id}/`;
+      ? `https://16.171.79.44/api/cardio/${recordToDelete.id}/?__user_id=${userId}`
+      : `https://16.171.79.44/api/cardio/${recordToDelete.id}/`;
       await axios.delete(url4, {
         headers: { Authorization: `Bearer ${token}` }, // Include the token in the headers
       });

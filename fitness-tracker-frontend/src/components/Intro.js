@@ -24,7 +24,7 @@ const Intro = () => {
 
   // Fetch CSRF token when the component mounts
   useEffect(() => {
-    axios.get('http://16.171.79.44/csrf-token/')
+    axios.get('https://16.171.79.44/csrf-token/')
         .then(response => {
             setCsrfToken(response.data.csrfToken);
         })
@@ -61,7 +61,7 @@ const Intro = () => {
 
     try {
         const response = await axios.post(
-            'http://16.171.79.44/create-user-and-client/',
+            'https://16.171.79.44/create-user-and-client/',
             formData,
             {
                 headers: {

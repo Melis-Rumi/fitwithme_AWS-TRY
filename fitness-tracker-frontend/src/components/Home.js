@@ -30,15 +30,15 @@ const Home = () => {
         }
         // Fetch cardio records
         const url = userId
-          ? `http://16.171.79.44/api/cardio_all/?__user_id=${userId}`
-          : `http://16.171.79.44/api/cardio_all/`;
+          ? `https://16.171.79.44/api/cardio_all/?__user_id=${userId}`
+          : `https://16.171.79.44/api/cardio_all/`;
         const cardioResponse = await axios.get(url, {
           headers: { Authorization: `Bearer ${token}` }, // Include the token in the headers
         });
         const cardioData = cardioResponse.data;
         const url1 = userId
-          ? `http://16.171.79.44/api/training_all/?__user_id=${userId}`
-          : `http://16.171.79.44/api/training_all/`;
+          ? `https://16.171.79.44/api/training_all/?__user_id=${userId}`
+          : `https://16.171.79.44/api/training_all/`;
         // Fetch training records
         const trainingResponse = await axios.get(url1, {
           headers: { Authorization: `Bearer ${token}` }, // Include the token in the headers
