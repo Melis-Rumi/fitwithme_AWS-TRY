@@ -1,13 +1,26 @@
 import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { UserContext } from './UserContext'; // Import UserContext
+import { UserContext } from './UserContext';
 import { AuthContext } from '../AuthContext';
 import './Login.css';
 
+
+const apiClient = axios.create({
+  baseURL: process.env.REACT_APP_API_URL || 'http://16.171.79.44',
+  timeout: 10000,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  // For development, you can bypass SSL verification
+  httpsAgent: {
+    rejectUnauthorized: false
+  }
+});
+
 const Login = () => {
   const { login } = useContext(AuthContext);
-  const { setUserId, setUsername } = useContext(UserContext); // Get setUserId and setUsername from UserContext
+  const { setUserId, setUsername } = useContext(UserContext);
   const [formData, setFormData] = useState({
     username: '',
     password: '',
@@ -23,23 +36,48 @@ const Login = () => {
     e.preventDefault();
     setError('');
     try {
-      const response = await axios.post('https://16.171.79.44/login/', formData, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
+      console.log('Attempting to log in with:', {
+        url: `${apiClient.defaults.baseURL}/login/`,
+        data: formData
       });
+  
+      const response = await apiClient.post('/login/', formData);
+      
       if (response.status === 200) {
-        const token = response.data.token; // Extract the token from the response
-        login(token); // Call the login function from AuthContext
-        const username = formData.username; // Get the username from the form data
-        setUserId(response.data.user_id); // Set the user ID in UserContext
-        setUsername(username); // Set the username in UserContext
+        const token = response.data.token;
+        login(token);
+        const username = formData.username;
+        setUserId(response.data.user_id);
+        setUsername(username);
         alert('Login successful!');
         navigate('/home');
       }
     } catch (error) {
-      console.error('Error:', error.response?.data || error.message);
-      setError(error.response?.data?.error || 'An unexpected error occurred.');
+      console.error('Full Error Details:', {
+        message: error.message,
+        config: error.config,
+        code: error.code,
+        request: error.request ? {
+          method: error.request.method,
+          url: error.request.url,
+          headers: error.request.headers
+        } : null
+      });
+      
+      if (error.response) {
+        // The request was made and the server responded with a status code
+        console.error('Error Response Data:', error.response.data);
+        console.error('Error Status:', error.response.status);
+        setError(error.response.data?.error || 'Login failed');
+      } else if (error.request) {
+        // The request was made but no response was received
+        console.error('No response received', error.request);
+        setError('No response from server. Check your network connection.');
+      } else {
+        // Something happened in setting up the request
+        console.error('Error Message:', error.message);
+        setError('An unexpected error occurred');
+      }
     }
   };
 

@@ -20,6 +20,7 @@ import Logout from './components/Logout';
 import LandingPage from './components/LandingPage';
 import NotAuthorized from './components/NotAuthorized';
 import './components/styles.css';
+import './axiosConfig';  // This applies the global configuration
 
 function App() {
   return (

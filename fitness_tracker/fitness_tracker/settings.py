@@ -26,9 +26,14 @@ SECRET_KEY = 'django-insecure-e26cvpcl5%(m&22&qh)1(3g1v&xny8szb3kwwv+m*9!x(k0%)^
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['api.www.fitwithmelis.co.uk','fitwithme.onrender.com', 'http://localhost:3000/', '16.171.79.44', 'ec2-16-171-79-44.eu-north-1.compute.amazonaws.com', 'localhost']
-
-CORS_ORIGIN_ALLOW_ALL = True
+ALLOWED_HOSTS = [
+    'api.www.fitwithmelis.co.uk',
+    'fitwithme.onrender.com', 
+    'localhost',
+    '16.171.79.44', 
+    'ec2-16-171-79-44.eu-north-1.compute.amazonaws.com'
+]
+#CORS_ORIGIN_ALLOW_ALL = True
 
 # Application definition
 
@@ -47,15 +52,15 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # Should be right after SecurityMiddleware
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',  # Should be as high as possible
     'django.middleware.common.CommonMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',  # Runs first
     'fitness_tracker.middleware.ImpersonateUserMiddleware',  # Runs after AuthenticationMiddleware
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
@@ -208,7 +213,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 CORS_ALLOWED_ORIGINS = [
-    'https://fitwithme.onrender.com', 'http://localhost:3000', 'https://16.171.79.44',
+    'https://fitwithme.onrender.com',
+    'http://localhost:3000',
+    'http://16.171.79.44',
+    'https://16.171.79.44',
 ]
 
 CSRF_TRUSTED_ORIGINS = [
