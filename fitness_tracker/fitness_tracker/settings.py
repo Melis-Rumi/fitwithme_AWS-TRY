@@ -28,9 +28,10 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     'api.www.fitwithmelis.co.uk',
-    'fitwithme.onrender.com', 
+    'fitwithmpt.pythonanywhere.com',
+    'fitwithme.onrender.com',
     'localhost',
-    '16.171.79.44', 
+    '16.171.79.44',
     'ec2-16-171-79-44.eu-north-1.compute.amazonaws.com'
 ]
 #CORS_ORIGIN_ALLOW_ALL = True
@@ -105,17 +106,16 @@ DATABASES = {
     }
 }
 """
-"""DATABASES = {
+DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'fitwithmelis',
-        'USER': 'fitwithmelis',
+        'NAME': 'fitwithmpt$fitwithmelis',
+        'USER': 'fitwithmpt',
         'PASSWORD': '225588jds',
-        'HOST': 'fitwithmelis.mysql.pythonanywhere-services.com',
+        'HOST': 'fitwithmpt.mysql.pythonanywhere-services.com',
         'PORT': '3306',
     }
 }
-"""
 """
 #local
 DATABASES = {
@@ -142,7 +142,7 @@ DATABASES = {
 }
 """
 #AWS
-
+"""
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -153,7 +153,7 @@ DATABASES = {
         'PORT': '',                     # PostgreSQL default port
     }
 }
-
+"""
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators

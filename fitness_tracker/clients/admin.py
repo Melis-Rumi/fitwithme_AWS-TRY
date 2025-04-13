@@ -5,7 +5,7 @@ from django.contrib import admin
 
 from django.contrib import admin
 from django.shortcuts import render
-from .models import MuscleGroup, Exercise
+from .models import MuscleGroup, Exercise, Nutrients
 
 @admin.register(MuscleGroup)
 class MuscleGroupAdmin(admin.ModelAdmin):
@@ -25,7 +25,6 @@ from django.contrib import messages
 from django import forms
 import csv
 from io import TextIOWrapper
-from .models import Nutrients
 
 class CsvImportForm(forms.Form):
     csv_file = forms.FileField()
