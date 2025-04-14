@@ -19,8 +19,8 @@ const TrainingProgram = () => {
   const fetchProgram = async (programId) => {
     try {
       const url = userId
-        ? `https://16.171.79.44/api/training-program/${programId}/?__user_id=${userId}`
-        : `https://16.171.79.44/api/training-program/${programId}/`;
+        ? `https://fitwithmpt.pythonanywhere.com/api/training-program/${programId}/?__user_id=${userId}`
+        : `https://fitwithmpt.pythonanywhere.com/api/training-program/${programId}/`;
 
       const response = await axios.get(url, {
         headers: { Authorization: `Bearer ${token}` }
@@ -36,8 +36,8 @@ const TrainingProgram = () => {
   const fetchLatestProgram = async () => {
     try {
       const url = userId
-        ? `https://16.171.79.44/api/training-program/latest/?__user_id=${userId}`
-        : `https://16.171.79.44/api/training-program/latest/`;
+        ? `https://fitwithmpt.pythonanywhere.com/api/training-program/latest/?__user_id=${userId}`
+        : `https://fitwithmpt.pythonanywhere.com/api/training-program/latest/`;
 
       const response = await axios.get(url, {
         headers: { Authorization: `Bearer ${token}` }
@@ -57,8 +57,8 @@ const TrainingProgram = () => {
   const createNewProgram = async () => {
     try {
       const url = userId
-        ? `https://16.171.79.44/api/training-program/?__user_id=${userId}`
-        : `https://16.171.79.44/api/training-program/`;
+        ? `https://fitwithmpt.pythonanywhere.com/api/training-program/?__user_id=${userId}`
+        : `https://fitwithmpt.pythonanywhere.com/api/training-program/`;
 
       const response = await axios.post(url, {}, {
         headers: { Authorization: `Bearer ${token}` }
@@ -75,8 +75,8 @@ const TrainingProgram = () => {
   const addWeek = async () => {
     try {
       const url = userId
-        ? `https://16.171.79.44/api/training-program/${currentProgram}/add-week/?__user_id=${userId}`
-        : `https://16.171.79.44/api/training-program/${currentProgram}/add-week/`;
+        ? `https://fitwithmpt.pythonanywhere.com/api/training-program/${currentProgram}/add-week/?__user_id=${userId}`
+        : `https://fitwithmpt.pythonanywhere.com/api/training-program/${currentProgram}/add-week/`;
 
       await axios.post(url, {}, {
         headers: { Authorization: `Bearer ${token}` },

@@ -15,17 +15,18 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
 from rest_framework.routers import DefaultRouter
+from django.views.generic import TemplateView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from clients.views import (
-    ClientViewSet, 
-    ProgressViewSet, 
-    TrainingProgramViewSet, 
-    MealPlanViewSet, 
+    ClientViewSet,
+    ProgressViewSet,
+    TrainingProgramViewSet,
+    MealPlanViewSet,
     LatestTrainingProgramView, CreateTrainingProgramView, AddWeekToProgramView,
-    get_csrf_token, 
-    
+    get_csrf_token,
+
     diet_view,
     cardio_view,
     training_view,
@@ -57,7 +58,7 @@ from clients.views import (
     some_protected_view,
     ImpersonationStatusView
     )
-    
+
 
 router = DefaultRouter()
 router.register(r'clients', ClientViewSet)
@@ -86,7 +87,7 @@ urlpatterns = [
     path('api/training-program/', create_training_program, name='create_training_program'),
     path('api/training-program/<int:program_id>/', get_training_program, name='get_training_program'),
     path('api/training-program/<int:program_id>/add-week/', add_week, name='add_week'),
-    
+
     # Training Day URLs
     path('api/training-day/<int:day_id>/update/', update_training_day, name='update_training_day'),
     path('api/training-day/<int:day_id>/', training_day_exercises, name='training_day_exercises'),
@@ -112,7 +113,7 @@ urlpatterns = [
     path('api/diet/<int:record_id>/', delete_diet_record, name='delete_diet_record'),
     path('api/metrics/<str:date>/', metrics_records, name='metrics_records'),
     path('api/metrics/<int:record_id>/', delete_metrics_record, name='delete_metrics_record'),
-
+    re_path(r'^.*$', TemplateView.as_view(template_name='index.html')),
     #path('api/', include('clients.urls')),
 ]
 

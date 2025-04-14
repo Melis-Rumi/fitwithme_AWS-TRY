@@ -3,7 +3,7 @@ import axios from 'axios';
 // Create a custom axios instance with flexible configuration
 const apiClient = axios.create({
   // Use the IP address or domain of your backend
-  baseURL: process.env.REACT_APP_API_URL || 'https://16.171.79.44',
+  baseURL: process.env.REACT_APP_API_URL || 'https://fitwithmpt.pythonanywhere.com',
   
   // Timeout setting
   timeout: 10000,

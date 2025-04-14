@@ -7,7 +7,7 @@ import './Login.css';
 
 
 const apiClient = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || 'http://16.171.79.44',
+  baseURL: process.env.REACT_APP_API_URL || 'https://fitwithmpt.pythonanywhere.com',
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',

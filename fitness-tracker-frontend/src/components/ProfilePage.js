@@ -9,8 +9,8 @@ const ProfilePage = () => {
 
   const { userId } = useContext(UserContext); // Get userId from context
   const url = userId
-  ? `https://16.171.79.44/api/client-profile/?__user_id=${userId}`
-  : 'https://16.171.79.44/api/client-profile/';
+  ? `https://fitwithmpt.pythonanywhere.com/api/client-profile/?__user_id=${userId}`
+  : 'https://fitwithmpt.pythonanywhere.com/api/client-profile/';
   const { token } = React.useContext(AuthContext); // Access the token from context
   const [profile, setProfile] = useState(null);
   const [editMode, setEditMode] = useState(false);

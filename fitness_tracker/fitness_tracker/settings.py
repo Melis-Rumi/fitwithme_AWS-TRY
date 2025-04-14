@@ -27,12 +27,13 @@ SECRET_KEY = 'django-insecure-e26cvpcl5%(m&22&qh)1(3g1v&xny8szb3kwwv+m*9!x(k0%)^
 DEBUG = True
 
 ALLOWED_HOSTS = [
+    'webapp-2547302.pythonanywhere.com',
+    'fitwithmelis.co.uk',
+    'www.fitwithmelis.co.uk',
     'api.www.fitwithmelis.co.uk',
     'fitwithmpt.pythonanywhere.com',
     'fitwithme.onrender.com',
     'localhost',
-    '16.171.79.44',
-    'ec2-16-171-79-44.eu-north-1.compute.amazonaws.com'
 ]
 #CORS_ORIGIN_ALLOW_ALL = True
 
@@ -71,7 +72,8 @@ ROOT_URLCONF = 'fitness_tracker.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],  # Add this line
+        #'DIRS': [os.path.join(BASE_DIR, 'templates')],  # Add this line
+        'DIRS': [os.path.join(BASE_DIR, 'static')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -199,7 +201,11 @@ STATIC_DIR = os.path.join(BASE_DIR, 'static')
 if not os.path.exists(STATIC_DIR):
     os.makedirs(STATIC_DIR)
 
-STATICFILES_DIRS = [STATIC_DIR]
+#STATICFILES_DIRS = [STATIC_DIR]
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+    '/home/fitwithmpt/fitwithme_AWS-TRY/fitness-tracker-frontend/build',
+]
 
 SESSION_COOKIE_SECURE = True
 # Static files (CSS, JavaScript, Images)
@@ -215,17 +221,20 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ALLOWED_ORIGINS = [
     'https://fitwithme.onrender.com',
     'http://localhost:3000',
-    'http://16.171.79.44',
-    'https://16.171.79.44',
+    'fitwithmpt.pythonanywhere.com',
+    'https://fitwithmelis.co.uk',
+    'https://www.fitwithmelis.co.uk',
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://fitwithme.onrender.com', 'http://localhost:3000', 'https://16.171.79.44',
+    'https://fitwithme.onrender.com', 'http://localhost:3000', 'fitwithmpt.pythonanywhere.com','https://fitwithmelis.co.uk',
+    'https://www.fitwithmelis.co.uk',
 ]
 
 CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_WHITELIST = [
-    'https://fitwithme.onrender.com', 'http://localhost:3000', 'https://16.171.79.44',  # Your React app URL
+    'https://fitwithme.onrender.com', 'http://localhost:3000', 'fitwithmpt.pythonanywhere.com','https://fitwithmelis.co.uk',
+    'https://www.fitwithmelis.co.uk',  # Your React app URL
 ]
 
 CORS_EXPOSE_HEADERS = ['Set-Cookie']

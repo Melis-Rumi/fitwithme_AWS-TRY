@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export const apiClient = axios.create({
-  baseURL: 'https://16.171.79.44',
+  baseURL: 'https://fitwithmpt.pythonanywhere.com',
   headers: {
     'Content-Type': 'application/json',
   },

@@ -63,20 +63,20 @@ const Progress = () => {
         };
 
         const url1 = userId
-          ? `https://16.171.79.44/api/progress/diet/?range=${timeRange}&__user_id=${userId}`
-          : `https://16.171.79.44/api/progress/diet/?range=${timeRange}`;
+          ? `https://fitwithmpt.pythonanywhere.com/api/progress/diet/?range=${timeRange}&__user_id=${userId}`
+          : `https://fitwithmpt.pythonanywhere.com/api/progress/diet/?range=${timeRange}`;
 
         const url2 = userId
-          ? `https://16.171.79.44/api/progress/cardio/?range=${timeRange}&__user_id=${userId}`
-          : `https://16.171.79.44/api/progress/cardio/?range=${timeRange}`;
+          ? `https://fitwithmpt.pythonanywhere.com/api/progress/cardio/?range=${timeRange}&__user_id=${userId}`
+          : `https://fitwithmpt.pythonanywhere.com/api/progress/cardio/?range=${timeRange}`;
 
         const url3 = userId
-          ? `https://16.171.79.44/api/progress/training/?range=${timeRange}&__user_id=${userId}`
-          : `https://16.171.79.44/api/progress/training/?range=${timeRange}`;
+          ? `https://fitwithmpt.pythonanywhere.com/api/progress/training/?range=${timeRange}&__user_id=${userId}`
+          : `https://fitwithmpt.pythonanywhere.com/api/progress/training/?range=${timeRange}`;
 
         const url4 = userId
-          ? `https://16.171.79.44/api/progress/metrics/?range=${timeRange}&__user_id=${userId}`
-          : `https://16.171.79.44/api/progress/metrics/?range=${timeRange}`;
+          ? `https://fitwithmpt.pythonanywhere.com/api/progress/metrics/?range=${timeRange}&__user_id=${userId}`
+          : `https://fitwithmpt.pythonanywhere.com/api/progress/metrics/?range=${timeRange}`;
 
         const dietResponse = await axios.get(url1, { headers });
         setDietData(dietResponse.data || []);
