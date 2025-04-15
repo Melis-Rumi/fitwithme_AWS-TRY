@@ -126,8 +126,8 @@ const Training = () => {
       
       const recordToDelete = exercises[index];
       const url3 = userId
-      ? `https://fitwithmpt.pythonanywhere.com/api/training/${recordToDelete.id}/?__user_id=${userId}`
-      : `https://fitwithmpt.pythonanywhere.com/api/training/${recordToDelete.id}/`;
+      ? `https://fitwithmpt.pythonanywhere.com/api/training_del/${recordToDelete.id}/?__user_id=${userId}`
+      : `https://fitwithmpt.pythonanywhere.com/api/training_del/${recordToDelete.id}/`;
       await axios.delete(url3, {
         headers: { Authorization: `Bearer ${token}` }, // Include the token in the headers
       });

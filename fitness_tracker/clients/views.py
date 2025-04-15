@@ -11,7 +11,6 @@ from rest_framework import status
 from .serializers import ClientSerializer, ProgressSerializer, TrainingProgramSerializer, MealPlanSerializer
 from django.middleware.csrf import get_token
 from django.http import JsonResponse
-from rest_framework.decorators import api_view
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.hashers import check_password
@@ -221,6 +220,49 @@ class ClientProfileView(APIView):
             return Response(serializer.errors, status=400)
         except (Client.DoesNotExist, User.DoesNotExist):
             return Response({'error': 'Client profile not found'}, status=404)
+
+
+
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from rest_framework import status
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
+
+class ChangePasswordView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        user = request.user
+        current_password = request.data.get('current_password')
+        new_password = request.data.get('new_password')
+        
+        # Validate input
+        if not current_password or not new_password:
+            return Response(
+                {'error': 'Current password and new password are required'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        # Check if current password is correct
+        if not user.check_password(current_password):
+            return Response(
+                {'error': 'Current password is incorrect'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        # Set the new password
+        user.set_password(new_password)
+        user.save()
+        
+        return Response(
+            {'message': 'Password updated successfully'},
+            status=status.HTTP_200_OK
+        )
+
 
 
 
@@ -606,6 +648,24 @@ def training_records(request, date):
         return Response(data, status=200)
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
+
+
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def delete_training_records(request, record_id):
+    user = get_impersonated_user(request)
+    try:
+        client = user.client
+        record = TrainingRecord.objects.get(id=record_id, client=client)
+        record.delete()
+        return JsonResponse({'message': 'Training record deleted successfully!'}, status=200)
+    except TrainingRecord.DoesNotExist:
+        return JsonResponse({'error': 'Record not found'}, status=404)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
+
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -1087,7 +1147,73 @@ class NutrientsSearchView(generics.ListAPIView):
 
 
 
+from django.core.mail import send_mail
+from django.conf import settings
+import random
+import string
 
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def reset_password(request):
+    username = request.data.get('username')
+    email = request.data.get('email')
+    
+    # Validate input
+    if not username or not email:
+        return Response({
+            'error': 'Username and email are required'
+        }, status=status.HTTP_400_BAD_REQUEST)
+    
+    # Check if user exists with given username and email
+    try:
+        user = User.objects.get(username=username, email=email)
+    except User.DoesNotExist:
+        # Return a generic message for security reasons
+        return Response({
+            'error': 'If this account exists, a password reset email has been sent'
+        }, status=status.HTTP_400_BAD_REQUEST)
+    
+    # Generate a random temporary password
+    temp_password = ''.join(random.choices(
+        string.ascii_letters + string.digits, k=12
+    ))
+    
+    # Update user's password
+    user.set_password(temp_password)
+    user.save()
+    
+    # Send email with temporary password
+    try:
+        send_mail(
+            subject='Your Temporary Password',
+            message=f'''Hello {user.username},
+            
+You have requested to reset your password.
+
+Your temporary password is: {temp_password}
+
+Please login with this temporary password and then change it immediately from your account settings.
+
+If you did not request this password reset, please contact support immediately.
+
+Best regards,
+Melis
+FitWithMPT''',
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[user.email],
+            fail_silently=False,
+        )
+        
+        return Response({
+            'message': 'Password reset successful. Check your email for temporary password.'
+        }, status=status.HTTP_200_OK)
+        
+    except Exception as e:
+        # Log the error but don't expose details to the user
+        print(f"Email error: {str(e)}")
+        return Response({
+            'error': 'Failed to send reset password email. Please try again later.'
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 

@@ -87,8 +87,8 @@ const Cardio = () => {
       }
       const recordToDelete = cardioRecords[index];
       const url4 = userId
-      ? `https://fitwithmpt.pythonanywhere.com/api/cardio/${recordToDelete.id}/?__user_id=${userId}`
-      : `https://fitwithmpt.pythonanywhere.com/api/cardio/${recordToDelete.id}/`;
+      ? `https://fitwithmpt.pythonanywhere.com/api/cardio_del/${recordToDelete.id}/?__user_id=${userId}`
+      : `https://fitwithmpt.pythonanywhere.com/api/cardio_del/${recordToDelete.id}/`;
       await axios.delete(url4, {
         headers: { Authorization: `Bearer ${token}` }, // Include the token in the headers
       });

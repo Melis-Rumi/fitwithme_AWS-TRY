@@ -38,6 +38,7 @@ from clients.views import (
     all_cardio_records,
     all_training_records,
     diet_records,
+    delete_training_records,
     delete_diet_record,
     metrics_records,
     delete_metrics_record,
@@ -54,9 +55,11 @@ from clients.views import (
     training_day_exercises,
     delete_exercise,
     ClientProfileView,
+    ChangePasswordView,
     NutrientsSearchView,
     some_protected_view,
-    ImpersonationStatusView
+    ImpersonationStatusView,
+    reset_password
     )
 
 
@@ -99,19 +102,22 @@ urlpatterns = [
     # Exercise URLs
     path('api/exercise/<int:exercise_id>/', delete_exercise, name='delete_exercise'),
     path('api/client-profile/', ClientProfileView.as_view(), name='client-profile'),
+    path('api/change-password/', ChangePasswordView.as_view(), name='change-password'),
     path('api/diet/', diet_view, name='diet_view'),
     path('api/cardio/', cardio_view, name='cardio_view'),
     path('api/training/', training_view, name='training_view'),
     path('api/metrics/', metrics_view, name='metrics_view'),
     path('api/muscle-groups/', muscle_groups, name='muscle_groups'),
     path('api/training/<str:date>/', training_records, name='training_records'),
+    path('api/training_del/<int:record_id>/', delete_training_records, name='delete_training_records'),
     path('api/cardio/<str:date>/', cardio_records, name='cardio_records'),
-    path('api/cardio/<int:record_id>/', delete_cardio_record, name='delete_cardio_record'),
+    path('api/cardio_del/<int:record_id>/', delete_cardio_record, name='delete_cardio_record'),
     path('api/cardio_all/', all_cardio_records, name='all_cardio_records'),
     path('api/training_all/', all_training_records, name='all_training_records'),
     path('api/diet/<str:date>/', diet_records, name='diet_records'),
-    path('api/diet/<int:record_id>/', delete_diet_record, name='delete_diet_record'),
+    path('api/diet_del/<int:record_id>/', delete_diet_record, name='delete_diet_record'),
     path('api/metrics/<str:date>/', metrics_records, name='metrics_records'),
+    path('reset-password/', reset_password, name='reset_password'),
     path('api/metrics/<int:record_id>/', delete_metrics_record, name='delete_metrics_record'),
     re_path(r'^.*$', TemplateView.as_view(template_name='index.html')),
     #path('api/', include('clients.urls')),

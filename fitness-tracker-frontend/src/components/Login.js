@@ -5,7 +5,6 @@ import { UserContext } from './UserContext';
 import { AuthContext } from '../AuthContext';
 import './Login.css';
 
-
 const apiClient = axios.create({
   baseURL: process.env.REACT_APP_API_URL || 'https://fitwithmpt.pythonanywhere.com',
   timeout: 10000,
@@ -81,11 +80,25 @@ const Login = () => {
     }
   };
 
+  const handleForgotPassword = () => {
+    navigate('/reset-password');
+  };
+
   return (
     <div className="login-container">
       <h1>Welcome Back</h1>
       <h2>Log in to access your fitness tracker</h2>
-      {error && <p className="error-message">{error}</p>}
+      {error && (
+        <div className="error-container">
+          <p className="error-message">{error}</p>
+          <button 
+            className="forgot-password-btn"
+            onClick={handleForgotPassword}
+          >
+            Forgot Password?
+          </button>
+        </div>
+      )}
       <form onSubmit={handleSubmit}>
         <input
           type="text"
@@ -105,12 +118,19 @@ const Login = () => {
         />
         <button type="submit">Log In</button>
       </form>
-      <p>
-        Don't have an account?{' '}
-        <span className="signup-link" onClick={() => navigate('/intro')}>
-          Sign up
-        </span>
-      </p>
+      <div className="login-footer">
+        <p>
+          Don't have an account?{' '}
+          <span className="signup-link" onClick={() => navigate('/intro')}>
+            Sign up
+          </span>
+        </p>
+        <p>
+          <span className="forgot-password-link" onClick={handleForgotPassword}>
+            Forgot your password?
+          </span>
+        </p>
+      </div>
     </div>
   );
 };

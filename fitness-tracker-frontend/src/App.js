@@ -19,6 +19,7 @@ import ProfilePage from './components/ProfilePage';
 import Logout from './components/Logout';
 import LandingPage from './components/LandingPage';
 import NotAuthorized from './components/NotAuthorized';
+import PasswordReset from './components/PasswordReset';
 import './components/styles.css';
 import './axiosConfig';  // This applies the global configuration
 
@@ -49,6 +50,7 @@ function App() {
               <Route path="/profile" element={<ProfilePage />} />
               <Route path="/clients" element={<ClientList />} />
               <Route path="/not-authorized" element={<NotAuthorized />} />
+              <Route path="/reset-password" element={<PasswordReset/>}/>
             </Routes>
             
         </Sidebar>

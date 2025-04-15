@@ -1,19 +1,19 @@
 // ProfilePage.js
-import React, { useState, useEffect ,useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { AuthContext } from '../AuthContext'; // Adjust the path as needed
 import { UserContext } from './UserContext';
 import './ProfilePage.css';
 
 const ProfilePage = () => {
-
   const { userId } = useContext(UserContext); // Get userId from context
   const url = userId
-  ? `https://fitwithmpt.pythonanywhere.com/api/client-profile/?__user_id=${userId}`
-  : 'https://fitwithmpt.pythonanywhere.com/api/client-profile/';
+    ? `https://fitwithmpt.pythonanywhere.com/api/client-profile/?__user_id=${userId}`
+    : 'https://fitwithmpt.pythonanywhere.com/api/client-profile/';
   const { token } = React.useContext(AuthContext); // Access the token from context
   const [profile, setProfile] = useState(null);
   const [editMode, setEditMode] = useState(false);
+  const [passwordChangeMode, setPasswordChangeMode] = useState(false);
   const [formData, setFormData] = useState({
     full_name: '',
     age: '',
@@ -26,10 +26,16 @@ const ProfilePage = () => {
     obstacles: '',
     physique_rating: '',
   });
+  const [passwordData, setPasswordData] = useState({
+    current_password: '',
+    new_password: '',
+    confirm_password: '',
+  });
+  const [passwordError, setPasswordError] = useState('');
+  const [passwordSuccess, setPasswordSuccess] = useState('');
 
   // Fetch client profile on component mount
   useEffect(() => {
-    
     const fetchProfile = async () => {
       try {
         const response = await axios.get(url, {
@@ -44,10 +50,17 @@ const ProfilePage = () => {
     fetchProfile();
   }, [url, token]);
 
-  // Handle input changes
+  // Handle input changes for profile
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+  };
+
+  // Handle input changes for password
+  const handlePasswordChange = (e) => {
+    const { name, value } = e.target;
+    setPasswordData({ ...passwordData, [name]: value });
+    setPasswordError(''); // Clear any previous errors
   };
 
   // Save updated profile
@@ -65,6 +78,66 @@ const ProfilePage = () => {
     }
   };
 
+  // Change password
+  const handlePasswordSave = async () => {
+    // Reset states
+    setPasswordError('');
+    setPasswordSuccess('');
+
+    // Validate passwords
+    if (passwordData.new_password !== passwordData.confirm_password) {
+      setPasswordError('New passwords do not match');
+      return;
+    }
+
+    if (passwordData.new_password.length < 6) {
+      setPasswordError('Password must be at least 8 characters long');
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        'https://fitwithmpt.pythonanywhere.com/api/change-password/',
+        passwordData,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      // Clear password fields
+      setPasswordData({
+        current_password: '',
+        new_password: '',
+        confirm_password: '',
+      });
+
+      setPasswordSuccess('Password changed successfully!');
+      setTimeout(() => {
+        setPasswordChangeMode(false);
+        setPasswordSuccess('');
+      }, 2000);
+    } catch (error) {
+      console.error('Error changing password:', error);
+      if (error.response && error.response.data && error.response.data.error) {
+        setPasswordError(error.response.data.error);
+      } else {
+        setPasswordError('Failed to change password. Please try again.');
+      }
+    }
+  };
+
+  // Toggle password change section
+  const togglePasswordChange = () => {
+    setPasswordChangeMode(!passwordChangeMode);
+    setPasswordError('');
+    setPasswordSuccess('');
+    setPasswordData({
+      current_password: '',
+      new_password: '',
+      confirm_password: '',
+    });
+  };
+
   if (!profile) {
     return <div>Loading...</div>;
   }
@@ -72,6 +145,10 @@ const ProfilePage = () => {
   return (
     <div className="profile-page">
       <h1>My Profile</h1>
+      
+      
+
+      {/* Profile Section */}
       {editMode ? (
         <form className="profile-form">
           <label>
@@ -187,6 +264,64 @@ const ProfilePage = () => {
           <button onClick={() => setEditMode(true)}>Edit Profile</button>
         </div>
       )}
+
+      {/* Password Change Section */}
+      <div className="password-section">
+        {!passwordChangeMode ? (
+          <button 
+            className="password-change-btn" 
+            onClick={togglePasswordChange}
+          >
+            Change Password
+          </button>
+        ) : (
+          <div className="password-change-form">
+            <h2>Change Password</h2>
+            {passwordError && <p className="error-message">{passwordError}</p>}
+            {passwordSuccess && <p className="success-message">{passwordSuccess}</p>}
+            <label>
+              Current Password:
+              <input
+                type="password"
+                name="current_password"
+                value={passwordData.current_password}
+                onChange={handlePasswordChange}
+                required
+              />
+            </label>
+            <label>
+              New Password:
+              <input
+                type="password"
+                name="new_password"
+                value={passwordData.new_password}
+                onChange={handlePasswordChange}
+                required
+              />
+            </label>
+            <label>
+              Confirm New Password:
+              <input
+                type="password"
+                name="confirm_password"
+                value={passwordData.confirm_password}
+                onChange={handlePasswordChange}
+                required
+              />
+            </label>
+            <div className="button-group">
+              <button type="button" onClick={handlePasswordSave}>
+                Update Password
+              </button>
+              <button type="button" onClick={togglePasswordChange}>
+                Cancel
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+
+
     </div>
   );
 };

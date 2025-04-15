@@ -33,6 +33,7 @@ ALLOWED_HOSTS = [
     'api.www.fitwithmelis.co.uk',
     'fitwithmpt.pythonanywhere.com',
     'fitwithme.onrender.com',
+    '127.0.0.1',
     'localhost',
 ]
 #CORS_ORIGIN_ALLOW_ALL = True
@@ -118,6 +119,7 @@ DATABASES = {
         'PORT': '3306',
     }
 }
+
 """
 #local
 DATABASES = {
@@ -221,19 +223,19 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ALLOWED_ORIGINS = [
     'https://fitwithme.onrender.com',
     'http://localhost:3000',
-    'fitwithmpt.pythonanywhere.com',
+    'https://fitwithmpt.pythonanywhere.com',
     'https://fitwithmelis.co.uk',
     'https://www.fitwithmelis.co.uk',
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://fitwithme.onrender.com', 'http://localhost:3000', 'fitwithmpt.pythonanywhere.com','https://fitwithmelis.co.uk',
+    'https://fitwithme.onrender.com', 'http://localhost:3000', 'https://fitwithmpt.pythonanywhere.com','https://fitwithmelis.co.uk',
     'https://www.fitwithmelis.co.uk',
 ]
 
 CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_WHITELIST = [
-    'https://fitwithme.onrender.com', 'http://localhost:3000', 'fitwithmpt.pythonanywhere.com','https://fitwithmelis.co.uk',
+    'https://fitwithme.onrender.com', 'http://localhost:3000', 'https://fitwithmpt.pythonanywhere.com','https://fitwithmelis.co.uk',
     'https://www.fitwithmelis.co.uk',  # Your React app URL
 ]
 
@@ -274,3 +276,22 @@ SIMPLE_JWT = {
     'BLACKLIST_AFTER_ROTATION': True,             # Blacklist old refresh tokens after rotation
 }
 
+"""
+# Email Configuration
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'  # Or your email service provider's SMTP server
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'fitwithmpt@gmail.com'  # Your email address
+EMAIL_HOST_PASSWORD = '225588jds'  # Your email password or app-specific password
+DEFAULT_FROM_EMAIL = 'Fitness Tracker fitwithmpt@gmail.com'
+"""
+
+# Email settings
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'me.lee.ssimo@gmail.com'
+EMAIL_HOST_PASSWORD = 'fopo xlwg ojcd kezf'
+DEFAULT_FROM_EMAIL = 'Fitness Tracker'

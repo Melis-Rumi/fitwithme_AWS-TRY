@@ -151,7 +151,7 @@ const Diet = () => {
       }
 
       const recordToDelete = dietRecords[index];
-      await axios.delete(`https://fitwithmpt.pythonanywhere.com/api/diet/${recordToDelete.id}/`, {
+      await axios.delete(`https://fitwithmpt.pythonanywhere.com/api/diet_del/${recordToDelete.id}/`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 

@@ -1,58 +1,94 @@
 /* ProfilePage.css */
 .profile-page {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 20px;
-    font-family: Arial, sans-serif;
-  }
-  
-  .profile-page h1 {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  
-  .profile-form label {
-    display: block;
-    margin-bottom: 10px;
-  }
-  
-  .profile-form input,
-  .profile-form textarea {
-    width: 100%;
-    padding: 8px;
-    margin-top: 5px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-  
-  .profile-form button {
-    margin-right: 10px;
-    padding: 10px 15px;
-    border: none;
-    background-color: #007bff;
-    color: white;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  .profile-form button:hover {
-    background-color: #0056b3;
-  }
-  
-  .profile-details p {
-    margin-bottom: 10px;
-  }
-  
-  .profile-details button {
-    padding: 10px 15px;
-    border: none;
-    background-color: #485869;
-    color: white;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  .profile-details button:hover {
-    background-color: #218838;
-  }
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  font-size: 17px;
+}
+
+.profile-page h1 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.profile-form label {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.profile-form input,
+.profile-form textarea {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.profile-form button {
+  margin-right: 10px;
+  padding: 10px 15px;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.profile-form button:hover {
+  background-color: #0056b3;
+}
+
+.profile-details p {
+  margin-bottom: 10px;
+}
+
+.profile-details button {
+  padding: 10px 15px;
+  border: none;
+  background-color: #485869;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.profile-details button:hover {
+  background-color: #218838;
+}
+
+/* Password change section styles */
+/* Alternative approach with absolute positioning */
+.password-section {
+  position: relative; /* Container for absolute positioning */
+  margin: 20px auto;
+  width: 100%;
+}
+
+.password-change-btn {
+  padding: 10px 15px;
+  border: none;
+  background-color: #6c757d;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+  display: block;
+  margin: 0 auto;
+  max-width: 200px;
+}
+
+.password-change-form {
+  position: absolute;
+  top: 100%; /* Position below the button */
+  left: 50%;
+  transform: translateX(-50%); /* Center horizontally */
+  width: 400px;
+  max-width: 100%; /* Prevent overflow on small screens */
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  z-index: 10; /* Ensure it appears above other content */
+}
