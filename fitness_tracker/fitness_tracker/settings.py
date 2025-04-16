@@ -73,8 +73,8 @@ ROOT_URLCONF = 'fitness_tracker.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        #'DIRS': [os.path.join(BASE_DIR, 'templates')],  # Add this line
-        'DIRS': [os.path.join(BASE_DIR, 'static')],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],  # Add this line
+        #'DIRS': [os.path.join(BASE_DIR, 'static')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -206,7 +206,8 @@ if not os.path.exists(STATIC_DIR):
 #STATICFILES_DIRS = [STATIC_DIR]
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
-    '/home/fitwithmpt/fitwithme_AWS-TRY/fitness-tracker-frontend/build',
+    os.path.join(BASE_DIR, '../fitness-tracker-frontend/build/static'),
+    #'/home/fitwithmpt/fitwithme_AWS-TRY/fitness-tracker-frontend/build',
 ]
 
 SESSION_COOKIE_SECURE = True

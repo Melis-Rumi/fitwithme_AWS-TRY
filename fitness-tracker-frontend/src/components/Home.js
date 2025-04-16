@@ -72,7 +72,12 @@ const Home = () => {
   // Handle date click
   const handleDateClick = (value) => {
     setDate(value);
-    navigate(`/day/${value.toISOString().split('T')[0]}`); // Navigate to the day's page
+    // Format the date in local timezone (YYYY-MM-DD)
+    const year = value.getFullYear();
+    const month = String(value.getMonth() + 1).padStart(2, '0');
+    const day = String(value.getDate()).padStart(2, '0');
+    const formattedDate = `${year}-${month}-${day}`;
+    navigate(`/day/${formattedDate}`);
   };
 
   // Custom tile content to show muscle group and highlight recorded days
@@ -85,7 +90,7 @@ const Home = () => {
       return (
         <div>
           {/* Show checkmark if there's a record */}
-          {hasRecord && <div className="record-indicator">✔️</div>}
+          {hasRecord && <div className="record-indicator">📈</div>}
           {/* Show muscle group if there's a training record */}
           {(record?.training?.length > 0 && (
             <div className="training-program">
@@ -97,7 +102,7 @@ const Home = () => {
               {"Cardio" } {/* Display the first muscle group */}
             </div>
           ))
-          || <div> <div className="record-indicator">❌</div>Rest</div> 
+          || <div> <div className="record-indicator">📉</div>Rest</div>
           }
         </div>
       );

@@ -119,7 +119,8 @@ urlpatterns = [
     path('api/metrics/<str:date>/', metrics_records, name='metrics_records'),
     path('reset-password/', reset_password, name='reset_password'),
     path('api/metrics/<int:record_id>/', delete_metrics_record, name='delete_metrics_record'),
-    re_path(r'^.*$', TemplateView.as_view(template_name='index.html')),
+    #re_path(r'^.*$', TemplateView.as_view(template_name='index.html')),
+    re_path(r'^(?!static/)(?!media/)(?!api/).*$', TemplateView.as_view(template_name='index.html')),
     #path('api/', include('clients.urls')),
 ]
 
